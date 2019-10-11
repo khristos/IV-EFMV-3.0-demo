@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Illustrated Verdict | Electronic Fetal Monitoring Viewer</title>
+  <link rel="stylesheet" type="text/css" href="./assets/css/main.css">
+  <link rel="shortcut icon" type="image/x-icon" href="./assets/img/icons/favicon.ico">
+</head>
+<body class="efmv">
+
+  <div class="section">
+    <div class="container">
+      <div class="efm__player" id="efm__player--default" role="region" aria-label="efm player" data-efm-player aria-live="polite">
+        <!-- Template - BEGIN -->
+        <script id="template--efm__media-item" data--efm__media-item type="text/template">
+          <div class="efm__media-item">
+            <div class="efm__content"><img src="{{_url}}" alt=""></div>
+          </div>
+        </script>
+        <!-- /.efm__media -->
+        <!-- Template - END -->
+
+        <!-- Template - BEGIN -->
+        <script id="template--efm__timeline" data--efm__timeline type="text/template">
+          <form class="efm__timeline columns is-centered">
+            <fieldset class="column is-full">
+              <input type="range" class="efm__seek-bar" list="tick-values" min="0" max="100" value="0" step=".00000000000001" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <!--<output for="efm__seek-bar" class="efm__seek-time">0</output><br>-->
+              <datalist id="tick-values">
+                <option value="10" label="Low"></option>
+                <option value="90" label="High"></option>
+              </datalist>
+              <div class="efm__timer"></div>
+            </fieldset>
+          </form>
+        </script>
+        <!-- /.efm__timeline -->
+        <!-- Template - END -->
+
+
+        <!-- Template - BEGIN -->
+        <script id="template--efm__timer" data--efm__timer type="text/template">
+          <span class="efm__timer-current">{{timerCurrent}}</span> / <span class="efm__timer-total">{{timerTotal}}</span>
+        </script>
+        <!-- /.efm__timer -->
+        <!-- Template - END -->
+
+
+        <script id="template--efm__controlBar" data--efm__controlBar type="text/template">
+          <form class="columns">
+            <fieldset class="efm__group column is-full">
+              <button class="efm__previous" title="Skip Backward"><i class="mdi mdi-skip-previous"></i></button>
+              <button class="{{playPauseButton}}" title="Play/Pause"><i class="mdi {{hasState}}"></i></button>
+              <button class="efm__next" title="Skip Forward"><i class="mdi mdi-skip-next"></i></button>
+
+              <label for="efm__play-speed"></label>
+              <div class="select">
+                <select class="efm__play-speed" id="" title="Select Playback Speed">
+                  <option value="1" title="Set Playback Speed 1" selected>x1</option>
+                  <!--<option value="4">x100</option>
+                      <option value="20">x500</option>-->
+                </select>
+              </div>
+            </fieldset>
+            <!--<fieldset class="efm__group column is-4">
+              <button class="efm__menu"><i class="mdi mdi-format-list-bulleted"></i></button>
+            </fieldset>-->
+          </form>
+        </script>
+        <!-- /.efm__controlBar -->
+        <!-- Template - END -->
+
+      </div> <!-- /.efm__player -->
+    </div> <!-- /.container -->
+  </div> <!-- /.section -->
+
+  <footer class="efm__footer section" role="contentinfo">
+    <div class="level container">
+      <header class="level-left">
+        <h1 class="title is-5">EFMV <span>v3.0</span></h1>
+      </header>
+      <figure class="iv__logo level-right">
+        <a href="http://illustratedverdict.com" title="Go to Illustrated Verdict Home Page" target="_blank">
+          <img src="./assets/img/IVLogo.png" alt="Illustrated Verdict logo" />
+        </a>
+      </figure>
+    </div> <!-- /.level -->
+  </footer> <!-- /.page__footer -->
+
+
+  <!-- Dependencies -->
+  <script type="text/javascript" src="./assets/js/efm.vendor.min.js"></script>
+
+  <!-- Scripts -->
+  <script type="text/javascript" src="./assets/js/efm.main.polyfills.js"></script>
+  <script type="text/javascript" src="./assets/js/efm.components.js"></script>
+
+  <!-- Data -->
+  <!--<iframe id='efm__configData' src="./content/data/config.json" onload="EFM.Util.getJSONIframe.call(this, EFM.Util.logTable)" style="display: none;"></iframe>-->
+
+
+
+</body>
+</html>
