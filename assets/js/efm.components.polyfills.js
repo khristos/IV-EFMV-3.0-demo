@@ -42,7 +42,7 @@
     mediaCollection: '.efm__media-collection',
     mediaItemImage: '.efm__media-item img',
     playButton: '.efm__play-pause',
-    playButtonState: {isPlaying: 'mdi-play', isPaused: 'mdi-pause'},
+    playButtonState: {isPlaying: 'mdi-pause', isPaused: 'mdi-play'},
     seekBar: '.efm__seek-bar',
     seekTime: '.efm__seek-time',
     nextButton: document.querySelector('.efm__next'),
@@ -119,7 +119,7 @@
     //
 
     var publicAPIs = {}, settings;
-    var marquee, children, displacement,
+    var media, marquee, children, displacement,
         timerCurrent, timerTotal, animations = [];
     var playButton, seekBar, seekTime;
 
@@ -250,7 +250,7 @@
     var controlBar = new Reef(defaults.controlBar, {
       data: {
         playPauseButton: defaults.playButton,
-        hasState: defaults.playButtonState.isPlaying
+        hasState: defaults.playButtonState.isPaused
       },
       template: function (props) {
         props['playPauseButton'] = props['playPauseButton'].replace('.', '');
@@ -343,7 +343,7 @@
       }*/
 
       console.group("MARQUEE");
-      console.log("# items: ", children.length, ";\nviewport width: ", marquee.clientWidth + ";\ntotal content width: ", displacement);
+      console.log("# items: ", children.length, ";\nViewport width: ", marquee.clientWidth + ";\nDisplacement (total content width): ", displacement);
       console.groupEnd();
 
       timer.setData({timerCurrent: timerCurrent, timerTotal: timerTotal});
@@ -387,8 +387,6 @@
           seekBar.value = animations[stripData.id].progress;
           seekBar.setAttribute('aria-valuenow', seekBar.value);
   
-          //seekTime.textContent = secondsToHms( Math.round(animation.currentTime / 1000) || 0);
-          //timerCurrent.textContent = (Math.round(animation.progress) ) || 0;
           if (seekTime && seekTime.textContent) {
             seekTime.textContent = seekBar.value;
           }
@@ -434,14 +432,14 @@
       animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
 
       if ( animations[stripData.id].paused ) {
-        controlBar.setData({hasState: settings.playButtonState.isPaused});
         animations[stripData.id].play();
-        _showLog();
+        controlBar.setData({hasState: settings.playButtonState.isPlaying});
+        _showProgress();
       }
       else {
         animations[stripData.id].pause();
-        controlBar.setData({hasState: settings.playButtonState.isPlaying});
-        _showLog();
+        controlBar.setData({hasState: settings.playButtonState.isPaused});
+        _showProgress();
       }
     };
 
@@ -453,40 +451,110 @@
      * @description binds events to the view
      */
     var _addEvents = function() {
+      // Seek bar event listener
       ['input','change'].forEach((function(evt) {
         document.addEventListener(evt, handleSeekBar, false );
       }));
 
+      // Media (i.e. swipe scans) event listener
+      media = document.querySelector('.efm__media');
+      media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
+
       //document.addEventListener( 'click', handleClick, false );
       //document.addEventListener( 'change', handleChange, false );
       //document.addEventListener( 'render', handleRender, false );
-    }
+    };
 
 
   /**
    * @name handleSeekBar
    * @var
    * @function
-   * @description Function to execute when the user operates' seek bar'.
+   * @description Event handler to execute when the user 
+   * operates 'seek bar'.
    */
-    var handleSeekBar = function() {
+    var handleSeekBar = function(event) {
       var stripData = strip.getData();
-      if (!event.target.closest(settings.seekBar)) return;
+      if ( !event.target.closest(settings.seekBar) ) return;
       animations[stripData.id].pause();
       animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
-      controlBar.setData({hasState: settings.playButtonState.isPlaying});
+      controlBar.setData({hasState: settings.playButtonState.isPaused});
+    };
+
+
+  /**
+   * @name handleScroll
+   * @var
+   * @function
+   * @description Event handler to execute when the user swipes fetal scans.
+   */
+    var handleScroll = function(event) {
+      var stripData = strip.getData(), xPos, transform, scrollPercent,
+      animationTime, animationProgress;
+      var stripStartTime = stripData.times.mediaStartTime;
+
+      if ( !event.target.closest(settings.media) ) return;
+      animations[stripData.id].play();
+      animations[stripData.id].pause();
+      controlBar.setData({hasState: settings.playButtonState.isPaused});
+
+      xPos = 0;
+      xPos += (media.offsetLeft - media.scrollLeft + media.clientLeft);
+      marquee.dataset.scroll = xPos;
+      scrollPercent = (Math.abs(xPos / displacement)) * 100;
+
+      animationTime = animations[stripData.id].currentTime = (scrollPercent / 100) * animations[stripData.id].duration;
+      animationProgress = seekBar.value = animations[stripData.id].progress = scrollPercent;
+
+      animations[stripData.id].set(marquee, {
+        //translateX: function() { return xPos; }
+      });
+
+      //transform = marquee.style.transform.match(/(-?[0-9\.]+)/g);
+      //marquee.style.transform = "translateX(" + xPos + "px)";
+      seekBar.setAttribute('aria-valuenow', animationProgress);
+      animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
+
+      timer.setData({timerCurrent: EFM.Util.secondsToHms( (animations[stripData.id].currentTime / 1000 ) + ( stripStartTime / 1000) ) || 0});
+
+      _showProgress();
+      console.group("SCROLL PROGRESS");
+      console.log("x: ", xPos, /*"transform: ", transform[0],*/ " media.offsetLeft: ", media.offsetLeft, " media.scrollLeft: ", media.scrollLeft, " media.clientLeft: ", media.clientLeft);
+      console.log("scrollPercent: \t\t" + scrollPercent, "\nAnimation progress: " + animationProgress, "\nCurrent time: \t" + EFM.Util.secondsToHms( (animationTime / 1000 ) + ( stripStartTime / 1000) ));
+      console.log("Instance: ", animations);
+      console.groupEnd("");
     }
 
 
+  /**
+   * @name _updateSeekbar
+   * @var
+   * @function
+   * @description Update the seek bar (i.e. input range control).
+   */
+  var _updateSeekbar = function() {
+    var stripData = strip.getData();
+    //animations[stripData.id].seek(animations[stripData.id].currentTime);
+    animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
+    console.log("Instance: ", animations);
+    // Work out how much of the media has played via the duration and currentTime parameters
+    //var percentage = Math.floor((100 / player.duration) * player.currentTime);
+    // Update the progress bar's value
+    //progressBar.value = percentage;
+    // Update the progress bar's text (for browsers that don't support the progress element)
+    //progressBar.innerHTML = percentage + '% played';
+  }
+
+
     /**
-     * @name _showLog
+     * @name _showProgress
      * @param 
-     * @description Log animation metadata
+     * @description Console.log animation progress.
      */
-    var _showLog = function() {
+    var _showProgress = function() {
       var stripData = strip.getData();
       console.group("ANIMATION PROGRESS");
-      console.log("seekBar.value: ", seekBar.value , '%', "\n animations.progress: ", animations[stripData.id].progress, "\n animations.duration: ", animations[stripData.id].duration, "\n animations.currentTime: ", animations[stripData.id].currentTime);
+      console.log("seekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime);
       console.groupEnd();
     }
 

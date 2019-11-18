@@ -73,6 +73,7 @@ EFM.Util = {
 
   /**
    * Debounce functions for better performance
+   * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
    * @param  {Function}   fn The function to debounce
    */
   debounce: function (fn) {
