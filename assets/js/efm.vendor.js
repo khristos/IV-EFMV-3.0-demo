@@ -2347,7 +2347,7 @@ var placeholders = function (template, data) {
 
 };
 /*!
- * reefjs v4.1.3
+ * reefjs v4.1.5
  * A lightweight helper function for creating reactive, state-based components and UI
  * (c) 2019 Chris Ferdinandi
  * MIT License
@@ -2590,7 +2590,11 @@ if (!Element.prototype.matches) {
 			} else if (attribute.att === 'style') {
 				diffStyles(elem, attribute.value);
 			} else if (attribute.att in elem) {
-				elem[attribute.att] = attribute.value;
+				try {
+					elem[attribute.att] = attribute.value;
+				} catch(e) {
+					elem.setAttribute(attribute.att, attribute.value || true);
+				}
 			} else {
 				elem.setAttribute(attribute.att, attribute.value || true);
 			}
@@ -2612,8 +2616,12 @@ if (!Element.prototype.matches) {
 				elem.className = '';
 			} else if (attribute.att === 'style') {
 				removeStyles(elem, Array.prototype.slice.call(elem.style));
-			} else if (attribute.att in elem) {
-				elem[attribute.att] = '';
+			} else if (attribute.att in elem ) {
+				try {
+					elem[attribute.att] = '';
+				} catch(e) {
+					elem.removeAttribute(attribute.att);
+				}
 			} else {
 				elem.removeAttribute(attribute.att);
 			}
