@@ -46,8 +46,8 @@
     playButtonState: {isPlaying: 'mdi-pause', isPaused: 'mdi-play'},
     seekBar: '.efm__seek-bar',
     seekTime: '.efm__seek-time',
-    nextButton: document.querySelector('.efm__next'),
-    backButton: document.querySelector('.efm__previous'),
+    nextButton: '.efm__next',
+    backButton: '.efm__previous',
     timerCurrent: '.efm__timer-current',
     timerTotal: '.efm__timer-total',
     playSpeed: document.querySelector('.efm__play-speed'),
@@ -483,6 +483,10 @@
       media = document.querySelector('.efm__media');
       media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
 
+      // Skip forward/backward in time
+      document.addEventListener('click', _skipForward, false );
+      document.addEventListener('click', _skipBackward, false );
+
       //document.addEventListener( 'click', handleClick, false );
       //document.addEventListener( 'change', handleChange, false );
       //document.addEventListener( 'render', handleRender, false );
@@ -550,6 +554,50 @@
 
 
   /**
+   * @name _skipForward
+   * @var
+   * @function
+   * @description Event handler to execute when the user skips forward.
+   */
+    var _skipForward = function(evt) {
+      evt.preventDefault();
+      var stripData = strip.getData();
+      if ( !event.target.closest(settings.nextButton) ) return;
+      if ( animations[stripData.id].currentTime === 0 ) {
+        animations[stripData.id].play();
+      }
+      animations[stripData.id].pause();
+      controlBar.setData({hasState: settings.playButtonState.isPaused});
+      //console.log("Skip Next");
+      //animations[stripData.id].seek( (animations[stripData.id].duration * (seekBar.value / 100)) + ( animations[stripData.id].duration / (children.length * (children.length / 3) )) );
+      animations[stripData.id].seek( (animations[stripData.id].currentTime) + ( 1000*60*15 ) ); // skip 15 minutes
+      _updateSeekbar();
+    }
+
+
+  /**
+   * @name _skipBackward
+   * @var
+   * @function
+   * @description Event handler to execute when the user skips backward.
+   */
+    var _skipBackward = function(evt) {
+      evt.preventDefault();
+      var stripData = strip.getData();
+      if ( !event.target.closest(settings.backButton) ) return;
+      if ( animations[stripData.id].currentTime === 0 ) {
+        animations[stripData.id].play();
+      }
+      animations[stripData.id].pause();
+      controlBar.setData({hasState: settings.playButtonState.isPaused});
+      //console.log("Skip Back");
+      //animations[stripData.id].seek( (animations[stripData.id].duration * (seekBar.value / 100)) - ( animations[stripData.id].duration / (children.length * (children.length / 3) )) );
+      animations[stripData.id].seek( (animations[stripData.id].currentTime) - ( 1000*60*15 ) ); // skip 15 minutes
+      _updateSeekbar();
+    }
+
+
+  /**
    * @name _updateSeekbar
    * @var
    * @function
@@ -557,8 +605,9 @@
    */
   var _updateSeekbar = function() {
     var stripData = strip.getData();
-    //animations[stripData.id].seek(animations[stripData.id].currentTime);
-    animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
+    seekBar.value = animations[stripData.id].progress;
+    animations[stripData.id].seek(animations[stripData.id].currentTime);
+    //animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
     console.log("Instance: ", animations);
     // Work out how much of the media has played via the duration and currentTime parameters
     //var percentage = Math.floor((100 / player.duration) * player.currentTime);
