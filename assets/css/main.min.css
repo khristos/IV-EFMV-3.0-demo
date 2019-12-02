@@ -30645,6 +30645,7 @@ input.visually-hidden:focus + label {
 /*-------------*/
 .efm__media {
   overflow-x: auto;
+  scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
   position: relative;
