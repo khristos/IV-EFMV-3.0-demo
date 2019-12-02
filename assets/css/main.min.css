@@ -30711,6 +30711,11 @@ input.visually-hidden:focus + label {
   border: inherit;
 }
 
+.efm__controls .efm__timer {
+  font-size: .75em;
+  font-weight: bold;
+}
+
 .efm__controls .efm__controlBar {
   text-align: center;
 }

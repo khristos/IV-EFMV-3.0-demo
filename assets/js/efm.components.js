@@ -45,7 +45,6 @@
     playButton: '.efm__play-pause',
     playButtonState: {isPlaying: 'mdi-pause', isPaused: 'mdi-play'},
     seekBar: '.efm__seek-bar',
-    seekTime: '.efm__seek-time',
     nextButton: '.efm__next',
     backButton: '.efm__previous',
     timerCurrent: '.efm__timer-current',
@@ -123,7 +122,7 @@
     var publicAPIs = {}, settings;
     var media, marquee, children, displacement,
         timerCurrent, timerTotal, animations = [];
-    var playButton, seekBar, seekTime;
+    var playButton, seekBar;
 
     //
     // Methods
@@ -382,8 +381,7 @@
      */
     var _animateMarquee = function() {
       playButton = settings.playButton,
-      seekBar = document.querySelector(settings.seekBar),
-      seekTime = document.querySelector(settings.seekTime);
+      seekBar = document.querySelector(settings.seekBar);
 
       var stripData = strip.getData(), playerData = player.getData(),
       stripStartTime = stripData.times.mediaStartTime,
@@ -409,10 +407,7 @@
           //console.log(animation);
           seekBar.value = animations[stripData.id].progress;
           seekBar.setAttribute('aria-valuenow', seekBar.value);
-  
-          if (seekTime && seekTime.textContent) {
-            seekTime.textContent = seekBar.value;
-          }
+
           timer.setData({timerCurrent: EFM.Util.secondsToHms( (animation.currentTime / 1000 ) + ( stripStartTime / 1000) ) || 0});
         },
         autoplay: false
@@ -464,6 +459,7 @@
         controlBar.setData({hasState: settings.playButtonState.isPaused});
         _showProgress();
       }
+      timer.render();
     };
 
 
@@ -506,6 +502,7 @@
       animations[stripData.id].pause();
       animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
       controlBar.setData({hasState: settings.playButtonState.isPaused});
+      timer.render();
     };
 
 

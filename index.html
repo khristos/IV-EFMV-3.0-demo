@@ -31,7 +31,6 @@
               <option value="10" label="Low"></option>
               <option value="90" label="High"></option>
             </datalist>
-            <div class="efm__timer"></div>
           </fieldset>
         </script>
         <!-- /.efm__timeline -->
@@ -40,18 +39,19 @@
 
         <!-- Template - BEGIN -->
         <script id="template--efm__timer" data--efm__timer type="text/template">
-          <span class="efm__timer-current">{{timerCurrent}}</span> / <span class="efm__timer-total">{{timerTotal}}</span>
+          <span class="efm__timer-current&total">{{timerCurrent}} / {{timerTotal}}</span>
         </script>
         <!-- /.efm__timer -->
         <!-- Template - END -->
 
 
+        <!-- Template - BEGIN -->
         <script id="template--efm__controlBar" data--efm__controlBar type="text/template">
           <form class="columns">
             <fieldset class="efm__group column is-full">
-              <button class="efm__previous" title="Skip Backward"><i class="mdi mdi-skip-previous"></i></button>
+              <button class="efm__previous" title="Skip Backward"><i class="mdi mdi-history"></i></button>
               <button class="{{playPauseButton}}" title="Play/Pause"><i class="mdi {{hasState}}"></i></button>
-              <button class="efm__next" title="Skip Forward"><i class="mdi mdi-skip-next"></i></button>
+              <button class="efm__next" title="Skip Forward"><i class="mdi mdi-history mdi-flip-h"></i></button>
 
               <label for="efm__play-speed"></label>
               <div class="select">
@@ -61,6 +61,7 @@
                       <option value="20">x500</option>-->
                 </select>
               </div>
+              <span class="efm__timer"></span>
             </fieldset>
             <!--<fieldset class="efm__group column is-4">
               <button class="efm__menu"><i class="mdi mdi-format-list-bulleted"></i></button>
@@ -72,6 +73,7 @@
 
         <!-- Template - BEGIN -->
         <script id="template--efm__loader" data--efm__loader type="text/template">
+          <i class="mdi mdi-48px mdi-spin mdi-loading"></i>
           <svg class="efm__loader--svg" aria-labelledby="Loading scans..." preserveAspectRatio="none"><rect width="100%" height="100%" clip-path="url(#wavujzxldb)" fill="url(&quot;#863604d4dct&quot;)"/><defs><linearGradient id="863604d4dct"><stop offset=".473" stop-color="#dfdcdc"><animate attributeName="offset" values="-2; -2; 1" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="1.473" stop-color="#ecebeb"><animate attributeName="offset" values="-1; -1; 2" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="2.473" stop-color="#dfdcdc"><animate attributeName="offset" values="0; 0; 3" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop></linearGradient><clipPath id="wavujzxldb"><rect rx="3" ry="3" width="100%" height="100%"/></clipPath></defs></svg>
         </script>
         <!-- /.efm__loading -->
