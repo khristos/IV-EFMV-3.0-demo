@@ -1,0 +1,100 @@
+<configData>
+  <ui>
+    <range height="45.85" y="265.2" color="3" show="true"/>
+    <palette>
+      <swatch fill="0xffff99" line="0x9a8700"/>
+      <swatch fill="0xffcccc" line="0xd68080"/>
+      <swatch fill="0x99ff99" line="0x78c878"/>
+      <swatch fill="0xa3ecff" line="0x0099ff"/>
+      <swatch fill="0xffffff" line="0x555555"/>
+    </palette>
+  </ui>
+  <categories>
+    <category label="Blood Pressure" show="true"/>
+    <category label="Comments" show="true"/>
+    <category label="Fetal Heart Rate" show="true"/>
+    <category label="Pitocin" show="true"/>
+  </categories>
+  <examples>
+    <example url="assets/examples/images/2407ch_strip2.jpg" scroll="">
+      <title>Variability</title>
+      <description/>
+    </example>
+    <example url="assets/examples/images/3169EFM_earlyDecel.jpg" scroll="">
+      <title>Early Deceleration</title>
+      <description/>
+    </example>
+    <example url="assets/examples/images/3169EFM_lateDecel.jpg" scroll="">
+      <title>Late Deceleration</title>
+      <description/>
+    </example>
+    <example url="assets/examples/images/3169EFM_varDecel.jpg" scroll="">
+      <title>Variable Deceleration</title>
+      <description/>
+    </example>
+    <example url="assets/examples/images/3169EFM_fetBradycardia.jpg" scroll="">
+      <title>Fetal Bradycardia</title>
+      <description/>
+    </example>
+    <example url="assets/examples/images/3169EFM_Accel.jpg" scroll="">
+      <title>Acceleration</title>
+      <description/>
+    </example>
+  </examples>
+  <strips>
+    <strip startHour="1" startMinute="47" startSecond="0" endHour="13" endMinute="28" endSecond="0">
+      <title>March 19, 2008</title>
+      <scans>
+        <scan url="assets/strip/4547fs_1.jpg"/>
+        <scan url="assets/strip/4547fs_2.jpg"/>
+        <scan url="assets/strip/4547fs_3.jpg"/>
+        <scan url="assets/strip/4547fs_4.jpg"/>
+        <scan url="assets/strip/4547fs_5.jpg"/>
+        <scan url="assets/strip/4547fs_6.jpg"/>
+        <scan url="assets/strip/4547fs_7.jpg"/>
+        <scan url="assets/strip/4547fs_8.jpg"/>
+        <scan url="assets/strip/4547fs_9.jpg"/>
+        <scan url="assets/strip/4547fs_10.jpg"/>
+        <scan url="assets/strip/4547fs_11.jpg"/>
+        <scan url="assets/strip/4547fs_12.jpg"/>
+        <scan url="assets/strip/4547fs_13.jpg"/>
+        <scan url="assets/strip/4547fs_14.jpg"/>
+        <scan url="assets/strip/4547fs_15.jpg"/>
+        <scan url="assets/strip/4547fs_16.jpg"/>
+        <scan url="assets/strip/4547fs_17.jpg"/>
+        <scan url="assets/strip/4547fs_18.jpg"/>
+      </scans>
+      <markers>
+        <marker time="8330" category="General" addedWithComment="false"/>
+        <marker time="9309" category="General" addedWithComment="false"/>
+      </markers>
+    </strip>
+    <strip startHour="1" startMinute="47" startSecond="0" endHour="13" endMinute="28" endSecond="0">
+      <title>March 19, 2008</title>
+      <scans>
+        <scan url="assets/strip/4547fs_1.jpg"/>
+        <scan url="assets/strip/4547fs_2.jpg"/>
+        <scan url="assets/strip/4547fs_3.jpg"/>
+        <scan url="assets/strip/4547fs_4.jpg"/>
+        <scan url="assets/strip/4547fs_5.jpg"/>
+        <scan url="assets/strip/4547fs_6.jpg"/>
+        <scan url="assets/strip/4547fs_7.jpg"/>
+        <scan url="assets/strip/4547fs_8.jpg"/>
+        <scan url="assets/strip/4547fs_9.jpg"/>
+        <scan url="assets/strip/4547fs_10.jpg"/>
+        <scan url="assets/strip/4547fs_11.jpg"/>
+        <scan url="assets/strip/4547fs_12.jpg"/>
+        <scan url="assets/strip/4547fs_13.jpg"/>
+        <scan url="assets/strip/4547fs_14.jpg"/>
+        <scan url="assets/strip/4547fs_15.jpg"/>
+        <scan url="assets/strip/4547fs_16.jpg"/>
+        <scan url="assets/strip/4547fs_17.jpg"/>
+        <scan url="assets/strip/4547fs_18.jpg"/>
+      </scans>
+      <markers>
+        <marker time="305" category="General" addedWithComment="false"/>
+        <marker time="11548" category="General" addedWithComment="false"/>
+      </markers>
+    </strip>
+  </strips>
+</configData>

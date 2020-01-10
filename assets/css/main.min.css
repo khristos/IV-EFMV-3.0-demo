@@ -1,7 +1,16 @@
-/*! efm-viewer v3.0.0 | (c) 2019 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
+/*! efm-viewer v3.0.0 | (c) 2020 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
 /*-----------*/
 /*  VENDOR   */
 /*-----------*/
+/**
+ * _variables-initial.scss
+ */
+/* CSS Custom Properties */
+:root {
+  --address-border-radius-rounded: 0.25em;
+  /* set the value with the SASS vars (with interpolation) */
+}
+
 /* MaterialDesignIcons.com */
 @font-face {
   font-family: "Material Design Icons";
@@ -31325,6 +31334,15 @@ label.panel-block:hover {
 /*-------------*/
 /*  UTILITY    */
 /*-------------*/
+/**
+ * _variables-initial.scss
+ */
+/* CSS Custom Properties */
+:root {
+  --address-border-radius-rounded: 0.25em;
+  /* set the value with the SASS vars (with interpolation) */
+}
+
 /*
 .container {
      @include flexbox;
@@ -31405,8 +31423,94 @@ label.panel-block:hover {
           align-items: center;
 }
 
+.text-truncate {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+//-- Margin Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/margin.css
+*/
 .no-margin-bottom {
   margin-bottom: 0 !important;
+}
+
+.margin-right-auto {
+  margin-right: auto;
+}
+
+.margin-left-auto {
+  margin-left: auto;
+}
+
+/*
+//-- Border Radius Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/border-radius.css
+*/
+/*.border-radius-rounded {
+    border-radius: 0.25em;
+}*/
+/* Check for Custom Properties support, and apply them */
+@supports (--address-border-radius: 0.25em) {
+  .border-radius-rounded {
+    border-radius: var(--border-radius-rounded, 0.25em);
+  }
+}
+
+/*
+//-- Border Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/border.css
+*/
+.no-border {
+  border: none !important;
+}
+
+/*
+//-- Flexbox Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/flex.css
+*/
+.inline-flex {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.flex-justify {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+/*
+//-- Position Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/position.css
+*/
+.absolute,
+.position-absolute {
+  position: absolute;
+}
+
+.position-top-right {
+  top: 0;
+  right: 0;
+}
+
+/*
+//-- Text Align Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/text-align.css
+*/
+/*
+//-- Display Utility Classes
+//   https://github.com/turretcss/turretcss/blob/master/turret/utility/display.css
+*/
+.display-none {
+  display: none;
 }
 
 /*-------------*/
@@ -31665,6 +31769,145 @@ input.visually-hidden:focus + label {
 .efm__loader--svg {
   height: 100%;
   width: 100%;
+}
+
+/*
+//-- Viewer MenuBar
+*/
+.efm__menuBar {
+  height: 50px;
+  padding: 0 14px;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  background-color: #991b1e;
+}
+
+.efm__menuBar-dots span {
+  display: inline-block;
+  width: 16px;
+  height: 15px;
+  border-radius: 50%;
+  margin: 18px 8px 0 0;
+  background-color: #dee2e6;
+}
+
+.efm__menuBar-media button {
+  padding: 0;
+  margin: 11px 0 0;
+  background: none;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  text-align: center;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.efm__menuBar-strip--title:focus, .efm__menuBar-strip--title.is-focused {
+  border-color: white;
+}
+
+.efm__menuBar-media button.active, .efm__menuBar-media button:hover {
+  background-color: #dee2e6;
+}
+
+.efm__menuBar-strip {
+  width: 40%;
+  max-width: 400px;
+  height: 30px;
+  padding: 0;
+  margin-top: 10px;
+  background-color: #fff;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.efm__menuBar-strip.show {
+  z-index: 5;
+}
+
+.efm__menuBar-strip--title {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 22px;
+}
+
+.efm__menuBar-strip--title .icon {
+  top: 3px;
+  right: .6rem;
+}
+
+.efm__menuBar-strip--loading {
+  display: none;
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  width: 14px;
+}
+
+.efm__menuBar-strip.show .mdi-menu-down {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  top: 2px;
+}
+
+.efm__menuBar-strip .dropdown-menu {
+  font-size: 1rem;
+  width: 100%;
+  margin: 8px 0 0;
+  text-align: left;
+  color: #4a4a4a;
+}
+
+.efm__menuBar-strip .dropdown-item {
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 32px;
+  text-align: inherit;
+}
+
+.efm__menuBar-strip.dropdown .mdi {
+  font-size: 1.25rem;
+}
+
+.efm__menuBar-strip .dropdown-edit .mdi {
+  font-size: inherit;
+}
+
+.efm__menuBar-strip .dropdown-item .dropdown-edit {
+  display: none;
+  position: absolute;
+  top: 4px;
+  right: 8px;
+}
+
+.efm__menuBar-strip .dropdown-item:hover .dropdown-edit {
+  display: inline-block;
+}
+
+.efm__menuBar-strip .dropdown-item:active {
+  background-color: inherit;
+}
+
+.efm__menuBar-strip .dropdown-new {
+  padding: 4px 5px;
+  background: #f8f9fa;
+}
+
+.efm__menuBar-strip .dropdown-new input {
+  width: calc(100% - 60px);
+  padding: 0 10px 0 12px;
+  margin-right: 6px;
+  border: 0;
+  background: #f8f9fa;
+}
+
+.efm__menuBar-strip .dropdown-new input:focus {
+  outline: none;
 }
 
 /*-------------*/

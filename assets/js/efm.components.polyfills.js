@@ -1,4 +1,4 @@
-/*! efm-viewer v3.0.0 | (c) 2019 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
+/*! efm-viewer v3.0.0 | (c) 2020 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
 /**
  * @file: efm-viewer.js
  */
@@ -43,16 +43,21 @@
     timerCurrent: '.efm__timer-current',
     timerTotal: '.efm__timer-total',
     playSpeed: document.querySelector('.efm__play-speed'),
+    menuBar: '.efm__menuBar',
+    menuBarStrips: '.dropdown-menu__strips',
+    menuBarButton: '.efm__menuBar-strip--title',
+    menuBarDropdownItem: '.dropdown-item',
 
     // Data
     storageID: 'efm__configData',
 
     // Templates (find in 'script' tags within html file)
-    templateStrip: document.querySelector('[data--efm__media-item]'),
+    templateStrip: EFM.Util.$('[data--efm__media-item]'),
     templateTimeline: document.querySelector('[data--efm__timeline]'),
     templateTimer: document.querySelector('[data--efm__timer]'),
     templateControlBar: document.querySelector('[data--efm__controlBar]'),
     templateLoader: document.querySelector('[data--efm__loader]'),
+    templateMenuBar: document.querySelector('[data--efm__menuBar]')
 
   };
 
@@ -114,7 +119,7 @@
 
     var publicAPIs = {}, settings;
     var media, marquee, children, displacement,
-        timerCurrent, timerTotal, animations = [];
+        timerCurrent, timerStart, timerTotal, animations = [];
     var playButton, seekBar;
 
     //
@@ -144,7 +149,7 @@
     /**
      * @name player
      * @class
-     * @description Parent EFM Viewer component
+     * @description Parent EFM Viewer component.
      */
     var player = new Reef(selector, {
       data: {
@@ -154,7 +159,7 @@
       template: function (props) {
         var html = '<div class="efm__media"></div>';
         html += `<div class="efm__controls" role="toolbar" aria-label="efm player">
-                  <form class="efm__timeline columns is-centered"></form>
+                  <form class="efm__timeline columns is-centered no-margin-bottom"></form>
                   <div class="efm__controlBar"></div>
                 </div>`;
         return html;
@@ -167,21 +172,23 @@
      * @name strip
      * @class
      * @param {string} [defaults.media] DOM element hook for strip component
-     * @param {Object} [data] Data property for this component
-     * @param {Object} [template] Template property for this component
-     * @description Component holding fetal strip scans
+     * @param {Object} [data] Data property for this component.
+     * @param {Object} [template] Template property for this component.
+     * @description Component - viewer fetal strip scans.
      */
     var strip = new Reef(defaults.media, {
       data: {
         duration: 0,
         id: null, // '3978fs' ID of strip
         strips: dataSource.data.configData.strips.strip,
-        times: null
+        times: null, 
+        title: null
       },
       template: function (props) {
         var template = defaults.templateStrip.innerHTML,
         strip = EFM.Util.getStrip(props.strips, props.id),
         stripID = this.data.id = strip.id,
+        stripTitle = this.data.title = strip.title,
         scans = strip.scans.scan.length > 0 ? strip.scans.scan : ["NO SCANS FOUND."],
         markers = strip.markers,
         html = '<div class="efm__media-collection" ' + 'data-efm-media-' + stripID + '>';
@@ -189,9 +196,6 @@
         var playerData = player.getData();
 
         this.data.times = EFM.Util.getStripTimes(strip);
-        console.group("STRIP DATA");
-        console.table(this.data);
-        console.groupEnd();
 
         scans.forEach((function (scan) {
           html += placeholders( template, scan );
@@ -199,6 +203,11 @@
 
         html += '</div>';
         html += `<div class="efm__loader${playerData.hasState}"></div>`;
+
+        console.group("STRIP DATA");
+        console.table(this.data);
+        console.groupEnd();
+
         return html;
       },
       attachTo: [dataSource, player]
@@ -208,7 +217,7 @@
     /**
      * @name timeline
      * @class
-     * @description Component holding fetal strip viewer timeline control
+     * @description Component - viewer timeline control.
      */
     var timeline = new Reef(defaults.timeline, {
       data: null,
@@ -224,7 +233,7 @@
     /**
      * @name timer
      * @class
-     * @description Component holding fetal strip viewer timer control
+     * @description Component - viewer timer control.
      */
     var timer = new Reef(defaults.timer, {
       data: {
@@ -243,7 +252,7 @@
     /**
      * @name controlBar
      * @class
-     * @description Component holding fetal strip viewer control bar
+     * @description Component - viewer control bar.
      */
     var controlBar = new Reef(defaults.controlBar, {
       data: {
@@ -263,7 +272,7 @@
     /**
      * @name loader
      * @class
-     * @description Component holding strips loading interface
+     * @description Component - viewer loading message.
      */
     var loader = new Reef(defaults.loader, {
       data: null,
@@ -274,6 +283,65 @@
       },
       attachTo: [dataSource, player]
     });
+
+
+      /**
+     * @name menuBar
+     * @class
+     * @description Component - viewer menubar.
+     */
+    var menuBar = new Reef(defaults.menuBar, {
+      data: {
+        isActive: false,
+        attrs: {dropdown: '', ariaExpanded: 'false'},
+        title: strip.getData().title
+      },
+      template: function (props) {
+        var template = defaults.templateMenuBar.innerHTML,
+        html = '';
+        html += placeholders( template, props );
+        return html;
+      },
+      attachTo: [dataSource, player]
+    });
+
+
+    /**
+     * @name menuBarStrips
+     * @class
+     * @description Component - EFM strip titles for dropdown menu.
+     */
+    var menuBarStrips = new Reef(defaults.menuBarStrips, {
+      data: {
+        strips: dataSource.data.configData.strips.strip
+      },
+      template: function (props) {
+        var html = '';
+
+        props.strips.forEach((function (strip) {
+          html += `
+            <a class="dropdown-item strip-item border-bottom" data-strip-id="${strip.id}">
+              ${strip.title} - ${strip.id}
+              <span class="dropdown-edit">
+                <i class="mdi mdi-lead-pencil strip-edit" title="Edit strip"></i>
+                <i class="mdi mdi-trash-can strip-delete" title="Delete strip"></i>
+              </span>
+            </a>
+          `;
+        }));
+
+        html += `
+        <div class="dropdown-new border-bottom editing-strip">
+          <input type="text" class="dropdown-menu__new-input" placeholder="output filename..."> 
+          <a class="has-text-primary strip-save-changes">Save</a>
+        </div>
+        `
+
+        return html;
+      },
+      attachTo: [dataSource, player]
+    });
+
 
 
     /**
@@ -300,7 +368,6 @@
      * Animate viewer
      */
     publicAPIs.animate = function (id) {
-      //EFMAnimate();
       _initMarquee();
 
       console.group("SETTINGS (EFMViewer)");
@@ -397,10 +464,8 @@
           //runProgressLogEl.value = 'progress : 100%';
         },
         update: function(animation) {
-          //console.log(animation);
           seekBar.value = animations[stripData.id].progress;
           seekBar.setAttribute('aria-valuenow', seekBar.value);
-
           timer.setData({timerCurrent: EFM.Util.secondsToHms( (animation.currentTime / 1000 ) + ( stripStartTime / 1000) ) || 0});
         },
         autoplay: false
@@ -426,7 +491,7 @@
 
       console.group("ANIMATIONS");
       console.log("Instance: ", animations);
-      console.log("Instance duration: ", animations[stripData.id].duration );
+      console.log("Instance duration: ", animations[stripData.id].duration);
       console.groupEnd();
     };
 
@@ -475,6 +540,8 @@
       // Skip forward/backward in time
       document.addEventListener('click', _skipForward, false );
       document.addEventListener('click', _skipBackward, false );
+      document.addEventListener('click', _toggleMenuBar, false );
+      document.addEventListener('click', _displayStrip, false );
 
       //document.addEventListener( 'click', handleClick, false );
       //document.addEventListener( 'change', handleChange, false );
@@ -549,8 +616,8 @@
    * @function
    * @description Event handler to execute when the user skips forward.
    */
-    var _skipForward = function(evt) {
-      evt.preventDefault();
+    var _skipForward = function(event) {
+      event.preventDefault();
       var stripData = strip.getData();
       if ( !event.target.closest(settings.nextButton) ) return;
       if ( animations[stripData.id].currentTime === 0 ) {
@@ -571,8 +638,8 @@
    * @function
    * @description Event handler to execute when the user skips backward.
    */
-    var _skipBackward = function(evt) {
-      evt.preventDefault();
+    var _skipBackward = function(event) {
+      event.preventDefault();
       var stripData = strip.getData();
       if ( !event.target.closest(settings.backButton) ) return;
       if ( animations[stripData.id].currentTime === 0 ) {
@@ -616,8 +683,51 @@
     var _showProgress = function() {
       var stripData = strip.getData();
       console.group("ANIMATION PROGRESS");
-      console.log("seekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime);
+      console.log("stripData.id: \t\t", stripData.id , "\nseekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime);
       console.groupEnd();
+    }
+
+
+    /**
+     * @name _toggleMenuBar
+     * @param 
+     * @description Console.log animation progress.
+     */
+    var _toggleMenuBar = function(event) {
+      event.preventDefault();
+      var menuBarData = menuBar.getData();
+      if ( !event.target.closest(settings.menuBarButton) ) return;
+      if (menuBarData.isActive == false) {
+        menuBar.setData({isActive: true, attrs: {dropdown: 'is-active', ariaExpanded: 'true'}});
+      }
+      else {
+        menuBar.setData({isActive: false, attrs: {dropdown: '', ariaExpanded: 'false'}});
+      }
+      menuBarStrips.render();
+    }
+
+
+    /**
+     * @name _displayStrip
+     * @param 
+     * @description Select new strip to display.
+     */
+    var _displayStrip = function(event) {
+      event.preventDefault();
+      var menuBarData = menuBar.getData();
+      if ( !event.target.closest(settings.menuBarDropdownItem) ) return;
+      var stripID = event.target.getAttribute('data-strip-id');
+      var stripData = strip.getData();
+      animations[stripData.id].pause();
+      strip.setData({
+        id: stripID
+      });
+      var stripTitle = strip.getData().title;
+
+      menuBar.setData({isActive: false, attrs: {dropdown: '', ariaExpanded: 'false'}, title: stripTitle});
+      
+      publicAPIs.animate();
+
     }
 
 

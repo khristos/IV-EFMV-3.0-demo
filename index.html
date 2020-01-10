@@ -10,7 +10,7 @@
 </head>
 <body class="efm__viewer">
 
-  <div class="section">
+  <section class="section">
     <div class="container">
       <div class="efm__player" id="efm__player--default" role="region" aria-label="efm player" data-efm-player aria-live="polite">
         <!-- Template - BEGIN -->
@@ -47,7 +47,7 @@
 
         <!-- Template - BEGIN -->
         <script id="template--efm__controlBar" data--efm__controlBar type="text/template">
-          <form class="columns">
+          <form class="columns no-margin-bottom">
             <fieldset class="efm__group column is-full">
               <button class="efm__previous" title="Skip Backward"><i class="mdi mdi-history"></i></button>
               <button class="{{playPauseButton}}" title="Play/Pause"><i class="mdi {{hasState}}"></i></button>
@@ -76,17 +76,62 @@
           <i class="mdi mdi-48px mdi-spin mdi-loading"></i>
           <svg class="efm__loader--svg" aria-labelledby="Loading scans..." preserveAspectRatio="none"><rect width="100%" height="100%" clip-path="url(#wavujzxldb)" fill="url(&quot;#863604d4dct&quot;)"/><defs><linearGradient id="863604d4dct"><stop offset=".473" stop-color="#dfdcdc"><animate attributeName="offset" values="-2; -2; 1" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="1.473" stop-color="#ecebeb"><animate attributeName="offset" values="-1; -1; 2" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="2.473" stop-color="#dfdcdc"><animate attributeName="offset" values="0; 0; 3" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop></linearGradient><clipPath id="wavujzxldb"><rect rx="3" ry="3" width="100%" height="100%"/></clipPath></defs></svg>
         </script>
-        <!-- /.efm__loading -->
+        <!-- /.efm__loader -->
         <!-- Template - END -->
 
 
       </div> <!-- /.efm__player -->
     </div> <!-- /.container -->
-  </div> <!-- /.section -->
+  </section> <!-- /.section -->
+
+
+  <section class="efm__menuBar has-text-justified flex-justify">
+    <!-- Template - BEGIN -->
+    <script id="template--efm__menuBar" data--efm__menuBar type="text/template">
+      <div class="efm__menuBar-dots margin-right-auto">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="efm__menuBar-strip border-radius-rounded dropdown {{attrs.dropdown}}">
+        <button class="efm__menuBar-strip--title text-truncate button dropdown-trigger" aria-haspopup="true" aria-expanded="{{attrs.ariaExpanded}}" aria-controls="dropdown-menu-strips">
+          <img src="./assets/img/loading.gif" alt="Loading..." class="efm__menuBar-strip--loading">
+          <span>{{title}}</span>
+          <span class="icon is-large absolute">
+            <i class="mdi mdi-menu-down" aria-hidden="true"></i>
+          </span>
+        </button>
+
+        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 28px, 0px);" id="dropdown-menu-strips" role="menu">
+          <div class="dropdown-content">
+            <!--<a href="#" class="dropdown-item is-active">
+              index.html
+            </a>-->
+            <div class="dropdown-menu__strips"></div> <!-- Insert JS component-->
+            <div class="dropdown-new dropdown-new__strip border-bottom d-none">
+              <input type="text" class="dropdown-menu__new-input" placeholder="output filename..."> 
+              <a class="has-text-primary strip-save-changes">Save</a>
+            </div>
+            <hr class="dropdown-divider">
+            <div class="has-text-centered">
+              <a class="dropdown-item strip-action__add"><i class="mdi mdi-playlist-plus"></i> Add a strip</a>
+              <a class="dropdown-item strip-action__cancel d-none">cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="efm__menuBar-media margin-left-auto"></div>
+    </script>
+    <!-- /#template--efm__menuStrips -->
+    <!-- Template - END -->
+  </section> <!-- /.efm__menuBar -->
+
 
 
   <footer class="efm__footer section" role="contentinfo">
-    <div class="level container">
+    <header class="level container">
       <h1 class="title is-5 level-left no-margin-bottom">EFMV&nbsp;<span >v3.0</span></h1>
 
       <div class="efm__logo level-right">
@@ -94,8 +139,8 @@
           <img src="./assets/img/IVLogo.png" alt="Illustrated Verdict logo" />
         </a>
       </div>
-    </div> <!-- /.level -->
-  </footer> <!-- /.page__footer -->
+    </header> <!-- /.level -->
+  </footer> <!-- /.efm__footer -->
 
 
   <!-- Dependencies -->

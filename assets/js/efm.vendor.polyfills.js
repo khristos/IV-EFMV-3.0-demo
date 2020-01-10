@@ -1,4 +1,4 @@
-/*! efm-viewer v3.0.0 | (c) 2019 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
+/*! efm-viewer v3.0.0 | (c) 2020 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
 /*
  * anime.js v3.1.0
  * (c) 2019 Julian Garnier
@@ -2340,7 +2340,7 @@ var placeholders = function (template, data) {
 
 };
 /*!
- * reefjs v4.1.9
+ * reefjs v4.1.11
  * A lightweight helper function for creating reactive, state-based components and UI
  * (c) 2019 Chris Ferdinandi
  * MIT License
@@ -2582,6 +2582,11 @@ if (!Element.prototype.matches) {
 			} else if (attribute.att === 'style') {
 				diffStyles(elem, attribute.value);
 			} else {
+				if (attribute.att in elem) {
+					try {
+						elem[attribute.att] = attribute.value || attribute.att;
+					} catch (e) {}
+				}
 				elem.setAttribute(attribute.att, attribute.value || '');
 			}
 		}));
@@ -2602,6 +2607,11 @@ if (!Element.prototype.matches) {
 			} else if (attribute.att === 'style') {
 				removeStyles(elem, Array.prototype.slice.call(elem.style));
 			} else {
+				if (attribute.att in elem) {
+					try {
+						elem[attribute.att] = '';
+					} catch (e) {}
+				}
 				elem.removeAttribute(attribute.att);
 			}
 		}));

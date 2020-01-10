@@ -206,7 +206,7 @@ callback_jsonp_1(
                 "_url": "content/strip/3196fs_2.jpg"
               },
               {
-                "_url": "content/strip/3196fss_3.jpg"
+                "_url": "content/strip/3196fs_3.jpg"
               },
               {
                 "_url": "content/strip/3196fs_4.jpg"
