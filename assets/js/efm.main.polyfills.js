@@ -363,7 +363,7 @@ EFM.Util = {
    * @name getStripTimes
    * @method
    * @description Retrieves strip start and end times
-   * @param   {object} strip  'strip' json object
+   * @param   {object} strip  Return JSON strip data.
    * @returns {null|Object}   Object containing strip start and end
    *                          times, or `null`
    */

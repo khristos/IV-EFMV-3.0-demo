@@ -1,0 +1,262 @@
+{
+  "configData": {
+    "ui": {
+      "range": {
+        "_height": "45.85",
+        "_y": "265.2",
+        "_color": "3",
+        "_show": "true"
+      },
+      "palette": {
+        "swatch": [
+          {
+            "_fill": "0xffff99",
+            "_line": "0x9a8700"
+          },
+          {
+            "_fill": "0xffcccc",
+            "_line": "0xd68080"
+          },
+          {
+            "_fill": "0x99ff99",
+            "_line": "0x78c878"
+          },
+          {
+            "_fill": "0xa3ecff",
+            "_line": "0x0099ff"
+          },
+          {
+            "_fill": "0xffffff",
+            "_line": "0x555555"
+          }
+        ]
+      }
+    },
+    "categories": {
+      "category": [
+        {
+          "_label": "Blood Pressure",
+          "_show": "true"
+        },
+        {
+          "_label": "Comments",
+          "_show": "true"
+        },
+        {
+          "_label": "Fetal Heart Rate",
+          "_show": "true"
+        },
+        {
+          "_label": "Pitocin",
+          "_show": "true"
+        }
+      ]
+    },
+    "examples": {
+      "example": [
+        {
+          "title": "Variability",
+          "description": "",
+          "_url": "assets/examples/images/2407ch_strip2.jpg",
+          "_scroll": ""
+        },
+        {
+          "title": "Early Deceleration",
+          "description": "",
+          "_url": "assets/examples/images/3169EFM_earlyDecel.jpg",
+          "_scroll": ""
+        },
+        {
+          "title": "Late Deceleration",
+          "description": "",
+          "_url": "assets/examples/images/3169EFM_lateDecel.jpg",
+          "_scroll": ""
+        },
+        {
+          "title": "Variable Deceleration",
+          "description": "",
+          "_url": "assets/examples/images/3169EFM_varDecel.jpg",
+          "_scroll": ""
+        },
+        {
+          "title": "Fetal Bradycardia",
+          "description": "",
+          "_url": "assets/examples/images/3169EFM_fetBradycardia.jpg",
+          "_scroll": ""
+        },
+        {
+          "title": "Acceleration",
+          "description": "",
+          "_url": "assets/examples/images/3169EFM_Accel.jpg",
+          "_scroll": ""
+        }
+      ]
+    },
+    "strips": {
+      "strip": [
+        {
+          "title": "March 19, 2008",
+          "scans": {
+            "scan": [
+              {
+                "_url": "assets/strip/4547fs_1.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_2.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_3.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_4.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_5.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_6.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_7.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_8.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_9.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_10.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_11.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_12.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_13.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_14.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_15.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_16.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_17.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_18.jpg"
+              }
+            ]
+          },
+          "markers": {
+            "marker": [
+              {
+                "_time": "8330",
+                "_category": "General",
+                "_addedWithComment": "false"
+              },
+              {
+                "_time": "9309",
+                "_category": "General",
+                "_addedWithComment": "false"
+              }
+            ]
+          },
+          "_startHour": "1",
+          "_startMinute": "47",
+          "_startSecond": "0",
+          "_endHour": "13",
+          "_endMinute": "28",
+          "_endSecond": "0"
+        },
+        {
+          "title": "March 19, 2008",
+          "scans": {
+            "scan": [
+              {
+                "_url": "assets/strip/4547fs_1.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_2.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_3.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_4.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_5.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_6.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_7.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_8.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_9.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_10.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_11.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_12.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_13.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_14.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_15.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_16.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_17.jpg"
+              },
+              {
+                "_url": "assets/strip/4547fs_18.jpg"
+              }
+            ]
+          },
+          "markers": {
+            "marker": [
+              {
+                "_time": "305",
+                "_category": "General",
+                "_addedWithComment": "false"
+              },
+              {
+                "_time": "11548",
+                "_category": "General",
+                "_addedWithComment": "false"
+              }
+            ]
+          },
+          "_startHour": "1",
+          "_startMinute": "47",
+          "_startSecond": "0",
+          "_endHour": "13",
+          "_endMinute": "28",
+          "_endSecond": "0"
+        }
+      ]
+    }
+  }
+} 
