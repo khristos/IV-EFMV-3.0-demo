@@ -156,9 +156,10 @@
     var player = new Reef(selector, {
       data: {
         speed: 1,
-        hasState: ' is-loading'
+        hasState: 'is-loading'
       },
       template: function (props) {
+        console.log('RENDER PLAYER.');
         var html = '<div class="efm__media"></div>';
         html += `<div class="efm__controls" role="toolbar" aria-label="efm player">
                   <form class="efm__timeline columns is-centered no-margin-bottom"></form>
@@ -193,8 +194,6 @@
         scans = strip.scans.scan.length > 0 ? strip.scans.scan : ["NO SCANS FOUND."],
         html = '<div class="efm__media-collection" ' + 'data-efm-media-' + stripID + '>';
 
-        var playerData = player.getData();
-
         this.data.title = strip.title;
         this.data.times = EFM.Util.getStripTimes(strip);
 
@@ -203,7 +202,7 @@
         }));
 
         html += '</div>';
-        html += `<div class="efm__loader${playerData.hasState}"></div>`;
+        html += `<div class="efm__loader" data-state="${player.data.hasState}"></div>`;
 
         console.group("STRIP DATA");
         console.table(this.data);
@@ -293,9 +292,18 @@
      */
     var menuBar = new Reef(defaults.menuBar, {
       data: {
-        isActive: false,
-        attrs: {dropdown: '', ariaExpanded: 'false'},
-        title: null
+        title: ' ',
+        machine: {
+          currentState: 'inactive',
+          states: {
+            inactive: {    on: { TOGGLE: 'active' }, 
+                        attrs: { className: ' ', ariaExpanded: 'false' }
+                      },
+            active: {    on: { TOGGLE: 'inactive' }, 
+                      attrs: { className: 'is-active', ariaExpanded: 'true' }
+                    }
+          }
+        }
       },
       template: function (props) {
         this.data.title = strip.data.title;
@@ -402,7 +410,7 @@
      * @description Create marquee container for animated content
      */
     var _createMarquee = function() {
-      player.setData({hasState: ''});
+      delete EFM.Util.$(settings.loader).dataset.state;
       timerCurrent = EFM.Util.secondsToHms( strip.data.times.mediaStartTime / 1000 ) || 0;
       timerTotal = EFM.Util.secondsToHms( strip.data.times.mediaEndTime / 1000 ) || 0;
 
@@ -430,6 +438,7 @@
       console.groupEnd();
 
       timer.setData({timerCurrent: timerCurrent, timerTotal: timerTotal});
+      menuBar.render();
 
       _animateMarquee();
     };
@@ -506,15 +515,17 @@
       //animations[strip.data.id].seek(animations[strip.data.id].duration * (seekBar.value / 100));
       _updateSeekbar();
 
-      if ( animations[strip.data.id].paused == true ) {
+      if ( animations[strip.data.id].paused === true ) {
+        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
         animations[strip.data.id].play();
         controlBar.setData({hasState: settings.playButtonState.isPlaying});
-        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
+        //debugger;
       }
-      else {
+      else if ( animations[strip.data.id].paused === false ) {
+        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
         animations[strip.data.id].pause();
         controlBar.setData({hasState: settings.playButtonState.isPaused});
-        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
+        //debugger;
       }
       timer.render();
     };
@@ -713,18 +724,20 @@
     /**
      * @name _toggleMenuBar
      * @param 
-     * @description Console.log animation progress.
+     * @description MenuBar toggle state behavior.
      */
     var _toggleMenuBar = function(event) {
       event.preventDefault();
-      var menuBarData = menuBar.getData();
       if ( !event.target.closest(settings.menuBarButton) ) return;
-      if (menuBarData.isActive == false) {
-        menuBar.setData({isActive: true, attrs: {dropdown: 'is-active', ariaExpanded: 'true'}});
-      }
-      else {
-        menuBar.setData({isActive: false, attrs: {dropdown: '', ariaExpanded: 'false'}});
-      }
+      // TOGGLE STATE MACHINE
+      var menuBarMachine = menuBar.data.machine,
+      state = EFM.Util.transition(menuBar, menuBarMachine.currentState, 'TOGGLE');
+      console.group("STATE (MenuBar): ", state, "\n", menuBarMachine.states[state]);
+      console.groupEnd();
+      var dropdown = menuBarMachine.states[state].attrs['className'];
+      var ariaExpanded = menuBarMachine.states[state].attrs['ariaExpanded'];
+      menuBarMachine['currentState'] = state;
+      menuBar.setData({ attrs: {className: dropdown, ariaExpanded: ariaExpanded} });
       menuBarStrips.render();
     }
 
@@ -737,10 +750,18 @@
     var _selectStrip = function(event) {
       event.preventDefault();
       if ( !event.target.closest(settings.menuBarDropdownItem) ) return;
-      var stripID = event.target.getAttribute('data-strip-id');
+      var stripID = event.target.getAttribute('data-strip-id'),
+      menuBarMachine = menuBar.data.machine,
+      state = EFM.Util.transition(menuBar, menuBarMachine.currentState, 'TOGGLE');
+      console.group("STATE (MenuBar): ", state, "\n", menuBarMachine.states[state]);
+      console.groupEnd();
+      var dropdown = menuBarMachine.states[state].attrs['className'],
+      ariaExpanded = menuBarMachine.states[state].attrs['ariaExpanded'];
+
       _pauseMarquee();
       strip.setData({id: stripID});
-      menuBar.setData({isActive: false, attrs: {dropdown: '', ariaExpanded: 'false'}, title: strip.data.title});
+      menuBarMachine['currentState'] = state;
+      menuBar.setData({ attrs: {className: dropdown, ariaExpanded: ariaExpanded}, title: strip.data.title });
       _initMarquee();
       _updateSeekbar();
     }

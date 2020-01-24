@@ -410,17 +410,23 @@ EFM.Util.$ = function (selector, parent) {
  * (c) 2019 Chris Ferdinandi, MIT License, https://gomakethings.com
  * @param  {String} selector The element selector
  * @param  {Node}   parent   The parent to search in [optional]
- * @return {Array}           Th elements
+ * @return {Array}           The elements
  */
 EFM.Util.$$ = function (selector, parent) {
   return Array.prototype.slice.call((parent ? parent : document).querySelectorAll(selector));
 };
 
+// Convert to lowercase
 EFM.Util.getNormalizedPageName = function(e) {
   var t = e.toLowerCase().trim(),
       n = t.indexOf(".html");
   return n > -1 && (t = t.substr(0, n)),
   (t = t.replace(/\s+/g, "_").replace(/[^a-z0-9-_]/g, "")) + ".html"
+};
+
+// Toggle state
+EFM.Util.transition = function(object, state, event) {
+  return object.data.machine.states[state].on[event] || state;
 };
 /**
  * Element.closest() polyfill
