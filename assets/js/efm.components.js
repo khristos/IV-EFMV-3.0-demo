@@ -285,7 +285,7 @@
     });
 
 
-      /**
+    /**
      * @name menuBar
      * @class
      * @description Component - viewer menubar.
@@ -370,7 +370,7 @@
       publicAPIs.animate();
 
       // Setup event listeners
-      //_addEvents();
+      _addEvents();
     };
 
 
@@ -458,7 +458,7 @@
       stripEndTime = stripData.times.mediaEndTime;
 
       strip.data.duration = ( stripEndTime - stripStartTime ) / playerData.speed;
-      //_addEvents();
+
       if (animations[strip.data.id]) return; // Exit if animation already exists.
 
       animations[strip.data.id] = anime.timeline({
@@ -492,8 +492,6 @@
         offset: 0
       })
 
-      _addEvents();
-
       console.group("ANIMATIONS");
       console.log("Instances: ", animations);
       console.log("Animation ID: ", animations[strip.data.id].id);
@@ -509,24 +507,20 @@
      */
     var _playMarquee = function(event) {
       if (event) { event.preventDefault(); }
-      var stripData = strip.getData();
-      //var stripData = strip.data;
 
-      //animations[strip.data.id].seek(animations[strip.data.id].duration * (seekBar.value / 100));
       _updateSeekbar();
+      var stripData = strip.data;
 
-      if ( animations[strip.data.id].paused === true ) {
-        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
+      if ( animations[stripData.id].paused === true ) {
         animations[strip.data.id].play();
         controlBar.setData({hasState: settings.playButtonState.isPlaying});
-        //debugger;
       }
-      else if ( animations[strip.data.id].paused === false ) {
-        _showProgress("_playMarquee - isPaused: " + animations[strip.data.id].paused);
-        animations[strip.data.id].pause();
+      else {
+        animations[stripData.id].pause();
         controlBar.setData({hasState: settings.playButtonState.isPaused});
-        //debugger;
       }
+      //debugger;
+      _showProgress("_playMarquee - isPaused: " + animations[stripData.id].paused);
       timer.render();
     };
 
@@ -536,9 +530,10 @@
      * @description Pause marquee
      */
     var _pauseMarquee = function() {
-      var stripData = strip.getData();
-      animations[strip.data.id].pause();
-      _showProgress("_pauseMarquee: " + animations[strip.data.id].paused);
+      var stripData = strip.data;
+      if ( animations[stripData.id].paused === true ) return; // Exit if animation is paused.
+      animations[stripData.id].pause();
+      _showProgress("_pauseMarquee: " + animations[stripData.id].paused);
       controlBar.setData({hasState: settings.playButtonState.isPaused});
       timer.render();
     };
@@ -552,8 +547,7 @@
      */
     var _addEvents = function() {
       // Play event listener.
-      events.on('click', playButton, _playMarquee);
-      //events.on('click', playButton, _playMarquee);
+      events.on('click', settings.playButton, _playMarquee);
       /*document.addEventListener( 'click', function (event) {
         // If the event target doesn't exist
         if (!event.target.closest(playButton)) return;
@@ -693,11 +687,11 @@
    * @description Update the seek bar (i.e. input range control).
    */
   var _updateSeekbar = function() {
-    var stripData = strip.getData();
+    var stripData = strip.data;
     if (!animations[stripData.id])  return; 
     seekBar.value = animations[stripData.id].progress;
     animations[stripData.id].seek(animations[stripData.id].currentTime);
-    //animations[stripData.id].seek(animations[stripData.id].duration * (seekBar.value / 100));
+    //animations[strip.data.id].seek(animations[strip.data.id].duration * (seekBar.value / 100));
     console.log("Animation Instance: ", animations);
     // Work out how much of the media has played via the duration and currentTime parameters
     //var percentage = Math.floor((100 / player.duration) * player.currentTime);
@@ -714,7 +708,7 @@
      * @description Console.log animation progress.
      */
     var _showProgress = function(msg) {
-      var stripData = strip.getData();
+      var stripData = strip.data;
       console.group("ANIMATION PROGRESS -", msg);
       console.log("stripData.id: \t\t", stripData.id , "\nseekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime, "\nanimations.id: ", animations[stripData.id].id);
       console.groupEnd();
