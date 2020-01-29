@@ -80,53 +80,57 @@
         <!-- Template - END -->
 
 
+        <!-- Template - BEGIN -->
+        <script id="template--efm__menuBar" data--efm__menuBar type="text/template">
+          <div class="efm__menuBar-dots margin-right-auto">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="efm__menuBar-strip border-radius-rounded dropdown {{attrs.className}}">
+            <button class="efm__menuBar-strip--title text-truncate button dropdown-trigger" aria-haspopup="true" aria-expanded="{{attrs.ariaExpanded}}" aria-controls="dropdown-menu-strips">
+              <img src="./assets/img/loading.gif" alt="Loading..." class="efm__menuBar-strip--loading">
+              <span>{{title}}</span>
+              <span class="icon is-large absolute">
+                <i class="mdi mdi-menu-down" aria-hidden="true"></i>
+              </span>
+            </button>
+
+            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 28px, 0px);" id="dropdown-menu-strips" role="menu">
+              <div class="dropdown-content">
+                <!--<a href="#" class="dropdown-item is-active">
+                  index.html
+                </a>-->
+                <div class="dropdown-menu__strips"></div> <!-- Insert JS component-->
+                <div class="dropdown-new dropdown-new__strip border-bottom d-none">
+                  <input type="text" class="dropdown-menu__new-input" placeholder="output filename..."> 
+                  <a class="has-text-primary strip-save-changes">Save</a>
+                </div>
+                <hr class="dropdown-divider">
+                <div class="has-text-centered">
+                  <a class="dropdown-item strip-action__add"><i class="mdi mdi-playlist-plus"></i> Add a strip</a>
+                  <a class="dropdown-item strip-action__cancel d-none">cancel</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="efm__menuBar-media margin-left-auto"></div>
+        </script>
+        <!-- /#template--efm__menuStrips -->
+        <!-- /.efm__menuBar -->
+        <!-- Template - END -->
+
+
       </div> <!-- /.efm__player -->
     </div> <!-- /.container -->
   </section> <!-- /.section -->
 
 
-  <section class="efm__menuBar has-text-justified flex-justify">
-    <!-- Template - BEGIN -->
-    <script id="template--efm__menuBar" data--efm__menuBar type="text/template">
-      <div class="efm__menuBar-dots margin-right-auto">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+  
 
-      <div class="efm__menuBar-strip border-radius-rounded dropdown {{attrs.className}}">
-        <button class="efm__menuBar-strip--title text-truncate button dropdown-trigger" aria-haspopup="true" aria-expanded="{{attrs.ariaExpanded}}" aria-controls="dropdown-menu-strips">
-          <img src="./assets/img/loading.gif" alt="Loading..." class="efm__menuBar-strip--loading">
-          <span>{{title}}</span>
-          <span class="icon is-large absolute">
-            <i class="mdi mdi-menu-down" aria-hidden="true"></i>
-          </span>
-        </button>
-
-        <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 28px, 0px);" id="dropdown-menu-strips" role="menu">
-          <div class="dropdown-content">
-            <!--<a href="#" class="dropdown-item is-active">
-              index.html
-            </a>-->
-            <div class="dropdown-menu__strips"></div> <!-- Insert JS component-->
-            <div class="dropdown-new dropdown-new__strip border-bottom d-none">
-              <input type="text" class="dropdown-menu__new-input" placeholder="output filename..."> 
-              <a class="has-text-primary strip-save-changes">Save</a>
-            </div>
-            <hr class="dropdown-divider">
-            <div class="has-text-centered">
-              <a class="dropdown-item strip-action__add"><i class="mdi mdi-playlist-plus"></i> Add a strip</a>
-              <a class="dropdown-item strip-action__cancel d-none">cancel</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="efm__menuBar-media margin-left-auto"></div>
-    </script>
-    <!-- /#template--efm__menuStrips -->
-    <!-- Template - END -->
-  </section> <!-- /.efm__menuBar -->
+  
 
 
 

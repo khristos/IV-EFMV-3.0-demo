@@ -164,6 +164,7 @@
         html += `<div class="efm__controls" role="toolbar" aria-label="efm player">
                   <form class="efm__timeline columns is-centered no-margin-bottom"></form>
                   <div class="efm__controlBar"></div>
+                  <div class="efm__menuBar has-text-justified flex-justify"></div>
                 </div>`;
         return html;
       },
@@ -411,8 +412,6 @@
      */
     var _createMarquee = function() {
       delete EFM.Util.$(settings.loader).dataset.state;
-      timerCurrent = EFM.Util.secondsToHms( strip.data.times.mediaStartTime / 1000 ) || 0;
-      timerTotal = EFM.Util.secondsToHms( strip.data.times.mediaEndTime / 1000 ) || 0;
 
       // Add up the width of all elements in the marquee.
       displacement = children.map((function(child) {
@@ -437,7 +436,6 @@
       console.log("# items: ", children.length, ";\nViewport width: ", marquee.clientWidth + ";\nDisplacement (total content width): ", displacement);
       console.groupEnd();
 
-      timer.setData({timerCurrent: timerCurrent, timerTotal: timerTotal});
       menuBar.render();
 
       _animateMarquee();
@@ -491,6 +489,8 @@
         loop: true,
         offset: 0
       })
+
+      _setTimer();
 
       console.group("ANIMATIONS");
       console.log("Instances: ", animations);
@@ -762,6 +762,24 @@
 
 
     /**
+     * @name _setTimer
+     * @param 
+     * @description Set current time and total time.
+     */
+    var _setTimer = function() {
+      var stripData = strip.data;
+      if (!animations[stripData.id]) return;
+
+      var stripStartTime = stripData.times.mediaStartTime,
+      stripEndTime = stripData.times.mediaEndTime;
+      timerCurrent = EFM.Util.secondsToHms( (animations[stripData.id].currentTime / 1000 ) + ( stripStartTime / 1000) ) || EFM.Util.secondsToHms( stripStartTime / 1000 );
+      timerTotal = EFM.Util.secondsToHms( stripEndTime / 1000 ) || 0;
+
+      timer.setData({timerCurrent: timerCurrent, timerTotal: timerTotal});
+    }
+
+
+    /**
      * Initialize viewer plugin
      */
     publicAPIs.init = function (options) {
@@ -781,8 +799,7 @@
 
     // Return the public APIs
     return publicAPIs;
-  };
-
+  }; // END - Constructor
 
   //
   // Return the Constructor
