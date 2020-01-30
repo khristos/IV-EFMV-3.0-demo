@@ -436,8 +436,6 @@
       console.log("# items: ", children.length, ";\nViewport width: ", marquee.clientWidth + ";\nDisplacement (total content width): ", displacement);
       console.groupEnd();
 
-      menuBar.render();
-
       _animateMarquee();
     };
 
@@ -490,12 +488,10 @@
         offset: 0
       })
 
-      _setTimer();
+      _updateSeekbar();
 
       console.group("ANIMATIONS");
-      console.log("Instances: ", animations);
-      console.log("Animation ID: ", animations[strip.data.id].id);
-      console.log("Instance duration: ", animations[strip.data.id].duration);
+      console.log("Instances: ", animations, ";\nAnimation ID: ", animations[strip.data.id].id, ";\nStrip ID: ", strip.data.id, ";\nInstance duration: ", animations[strip.data.id].duration);
       console.groupEnd();
     };
 
@@ -508,7 +504,6 @@
     var _playMarquee = function(event) {
       if (event) { event.preventDefault(); }
 
-      _updateSeekbar();
       var stripData = strip.data;
 
       if ( animations[stripData.id].paused === true ) {
@@ -688,10 +683,12 @@
    */
   var _updateSeekbar = function() {
     var stripData = strip.data;
-    if (!animations[stripData.id])  return; 
+    if (!animations[stripData.id]) return; 
     seekBar.value = animations[stripData.id].progress;
     animations[stripData.id].seek(animations[stripData.id].currentTime);
     //animations[strip.data.id].seek(animations[strip.data.id].duration * (seekBar.value / 100));
+    _setTimer();
+    menuBar.render();
     console.log("Animation Instance: ", animations);
     // Work out how much of the media has played via the duration and currentTime parameters
     //var percentage = Math.floor((100 / player.duration) * player.currentTime);
