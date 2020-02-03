@@ -12,9 +12,9 @@
 
   <section class="section">
     <div class="container">
-      <div class="efm__player" id="efm__player--default" role="region" aria-label="efm player" data-efm-player aria-live="polite">
+      <div class="efm__player" id="efm__player--default" role="region" aria-label="efm viewer" data-efm-viewer aria-live="polite">
         <!-- Template - BEGIN -->
-        <script id="template--efm__media-item" data--efm__media-item type="text/template">
+        <script id="template--efm__media-item" data-efm-media-item type="text/template">
           <div class="efm__media-item">
             <div class="efm__content"><img src="{{_url}}" alt=""></div>
           </div>
@@ -23,7 +23,7 @@
         <!-- Template - END -->
 
         <!-- Template - BEGIN -->
-        <script id="template--efm__timeline" data--efm__timeline type="text/template">
+        <script id="template--efm__timeline" data-efm-timeline type="text/template">
           <fieldset class="column is-full">
             <input type="range" class="efm__seek-bar" list="tick-values" min="0" max="100" value="0" step=".00000000000001" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <!--<output for="efm__seek-bar" class="efm__seek-time">0</output><br>-->
@@ -38,7 +38,7 @@
 
 
         <!-- Template - BEGIN -->
-        <script id="template--efm__timer" data--efm__timer type="text/template">
+        <script id="template--efm__timer" data-efm-timer type="text/template">
           <span class="efm__timer-current&total">{{timerCurrent}} / {{timerTotal}}</span>
         </script>
         <!-- /.efm__timer -->
@@ -46,12 +46,12 @@
 
 
         <!-- Template - BEGIN -->
-        <script id="template--efm__controlBar" data--efm__controlBar type="text/template">
+        <script id="template--efm__controlBar" data-efm-controlBar type="text/template">
           <form class="columns no-margin-bottom">
             <fieldset class="efm__group column is-full">
-              <button class="efm__previous" title="Skip Backward"><i class="mdi mdi-history"></i></button>
+              <button class="efm__backward" title="Skip Backward" data-offset="15"><i class="mdi mdi-history"></i></button>
               <button class="{{playPauseButton}}" title="Play/Pause"><i class="mdi {{hasState}}"></i></button>
-              <button class="efm__next" title="Skip Forward"><i class="mdi mdi-history mdi-flip-h"></i></button>
+              <button class="efm__forward" title="Skip Forward" data-offset="15"><i class="mdi mdi-history mdi-flip-h"></i></button>
 
               <label for="efm__play-speed"></label>
               <div class="select">
@@ -72,7 +72,7 @@
         <!-- Template - END -->
 
         <!-- Template - BEGIN -->
-        <script id="template--efm__loader" data--efm__loader type="text/template">
+        <script id="template--efm__loader" data-efm-loader type="text/template">
           <i class="mdi mdi-48px mdi-spin mdi-loading"></i>
           <svg class="efm__loader--svg" aria-labelledby="Loading scans..." preserveAspectRatio="none"><rect width="100%" height="100%" clip-path="url(#wavujzxldb)" fill="url(&quot;#863604d4dct&quot;)"/><defs><linearGradient id="863604d4dct"><stop offset=".473" stop-color="#dfdcdc"><animate attributeName="offset" values="-2; -2; 1" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="1.473" stop-color="#ecebeb"><animate attributeName="offset" values="-1; -1; 2" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop><stop offset="2.473" stop-color="#dfdcdc"><animate attributeName="offset" values="0; 0; 3" keyTimes="0; 0.25; 1" dur="2s" repeatCount="indefinite"/></stop></linearGradient><clipPath id="wavujzxldb"><rect rx="3" ry="3" width="100%" height="100%"/></clipPath></defs></svg>
         </script>
@@ -81,7 +81,7 @@
 
 
         <!-- Template - BEGIN -->
-        <script id="template--efm__menuBar" data--efm__menuBar type="text/template">
+        <script id="template--efm__menuBar" data-efm-menuBar type="text/template">
           <div class="efm__menuBar-dots margin-right-auto">
             <span></span>
             <span></span>

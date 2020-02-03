@@ -40,6 +40,8 @@
     seekBar: '.efm__seek-bar',
     nextButton: '.efm__next',
     backButton: '.efm__previous',
+    forwardTimeButton: '.efm__forward',
+    backwardTimeButton: '.efm__backward',
     timerCurrent: '.efm__timer-current',
     timerTotal: '.efm__timer-total',
     playSpeed: document.querySelector('.efm__play-speed'),
@@ -52,12 +54,12 @@
     storageID: 'efm__configData',
 
     // Templates (find in 'script' tags within html file)
-    templateStrip: EFM.Util.$('[data--efm__media-item]'),
-    templateTimeline: document.querySelector('[data--efm__timeline]'),
-    templateTimer: document.querySelector('[data--efm__timer]'),
-    templateControlBar: document.querySelector('[data--efm__controlBar]'),
-    templateLoader: document.querySelector('[data--efm__loader]'),
-    templateMenuBar: document.querySelector('[data--efm__menuBar]')
+    templateStrip: EFM.Util.$('[data-efm-media-item]'),
+    templateTimeline: document.querySelector('[data-efm-timeline]'),
+    templateTimer: document.querySelector('[data-efm-timer]'),
+    templateControlBar: document.querySelector('[data-efm-controlBar]'),
+    templateLoader: document.querySelector('[data-efm-loader]'),
+    templateMenuBar: document.querySelector('[data-efm-menuBar]')
 
   };
 
@@ -161,7 +163,7 @@
       template: function (props) {
         console.log('RENDER PLAYER.');
         var html = '<div class="efm__media"></div>';
-        html += `<div class="efm__controls" role="toolbar" aria-label="efm player">
+        html += `<div class="efm__controls" role="toolbar" aria-label="efm controls">
                   <form class="efm__timeline columns is-centered no-margin-bottom"></form>
                   <div class="efm__controlBar"></div>
                   <div class="efm__menuBar has-text-justified flex-justify"></div>
@@ -372,6 +374,7 @@
 
       // Setup event listeners
       _addEvents();
+      _setupScroll();
     };
 
 
@@ -526,7 +529,7 @@
      */
     var _pauseMarquee = function() {
       var stripData = strip.data;
-      if ( animations[stripData.id].paused === true ) return; // Exit if animation is paused.
+      if ( !animations[stripData.id] || animations[stripData.id].paused === true ) return; // Exit if animation is paused.
       animations[stripData.id].pause();
       _showProgress("_pauseMarquee: " + animations[stripData.id].paused);
       controlBar.setData({hasState: settings.playButtonState.isPaused});
@@ -556,7 +559,7 @@
 
       // Media scroll (i.e. swipe scans) event listener.
       media = document.querySelector('.efm__media');
-      media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
+      //media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
 
       // Skip forward/backward in time.
       document.addEventListener('click', _skipForward, false );
@@ -640,15 +643,16 @@
     var _skipForward = function(event) {
       event.preventDefault();
       var stripData = strip.getData();
-      if ( !event.target.closest(settings.nextButton) ) return;
+      var targetButton = event.target.closest(settings.forwardTimeButton);
+      if ( !targetButton ) return;
       if ( animations[stripData.id].currentTime === 0 ) {
         animations[stripData.id].play();
       }
+      var offset = Number.parseInt( targetButton.dataset.offset );
       animations[stripData.id].pause();
       controlBar.setData({hasState: settings.playButtonState.isPaused});
-      //console.log("Skip Next");
-      //animations[stripData.id].seek( (animations[stripData.id].duration * (seekBar.value / 100)) + ( animations[stripData.id].duration / (children.length * (children.length / 3) )) );
-      animations[stripData.id].seek( (animations[stripData.id].currentTime) + ( 1000*60*15 ) ); // skip 15 minutes
+      //console.log("Skip Forward");
+      animations[stripData.id].seek( (animations[stripData.id].currentTime) + ( 1000*60*offset ) ); // skip offset minutes
       _updateSeekbar();
     }
 
@@ -662,15 +666,16 @@
     var _skipBackward = function(event) {
       event.preventDefault();
       var stripData = strip.getData();
-      if ( !event.target.closest(settings.backButton) ) return;
+      var targetButton = event.target.closest(settings.backwardTimeButton);
+      if ( !targetButton ) return;
       if ( animations[stripData.id].currentTime === 0 ) {
         animations[stripData.id].play();
       }
+      var offset = Number.parseInt( targetButton.dataset.offset );
       animations[stripData.id].pause();
       controlBar.setData({hasState: settings.playButtonState.isPaused});
-      //console.log("Skip Back");
-      //animations[stripData.id].seek( (animations[stripData.id].duration * (seekBar.value / 100)) - ( animations[stripData.id].duration / (children.length * (children.length / 3) )) );
-      animations[stripData.id].seek( (animations[stripData.id].currentTime) - ( 1000*60*15 ) ); // skip 15 minutes
+      //console.log("Skip Backward");
+      animations[stripData.id].seek( (animations[stripData.id].currentTime) - ( 1000*60*offset ) ); // skip offset minutes
       _updateSeekbar();
     }
 
@@ -777,6 +782,29 @@
 
 
     /**
+     * @name _setupScroll
+     * @param 
+     * @description Setup scrolling
+     */
+    var _setupScroll = function() {
+      const viewport = document.querySelector('.efm__media');
+      const content = document.querySelector('.efm__media-collection');
+
+      var scrollInstance = new ScrollBooster({
+          viewport,
+          content,
+          //direction: 'horizontal',
+          onUpdate: (state) => {
+            _pauseMarquee();
+            content.style.transform = `translate(
+              ${-state.position.x}px
+            )`;
+          },
+          // other options (see below)
+      });
+    }
+
+    /**
      * Initialize viewer plugin
      */
     publicAPIs.init = function (options) {
@@ -809,7 +837,7 @@
 
 var defaultViewer = function() {
   EFM.Util.getXHRData.call(this, (function() {
-    return new EFMViewer('[data-efm-player]', {});
+    return new EFMViewer('[data-efm-viewer]', {});
   }));
 }
 
