@@ -122,7 +122,7 @@
     var publicAPIs = {}, settings;
     var media, marquee, children, displacement,
         timerCurrent, timerTotal, animations = [];
-    var playButton, seekBar;
+    var playButton, seekBar, scrollInstance;
 
     //
     // Methods
@@ -558,7 +558,7 @@
       }));
 
       // Media scroll (i.e. swipe scans) event listener.
-      media = document.querySelector('.efm__media');
+      media = document.querySelector(defaults.media);
       //media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
 
       // Skip forward/backward in time.
@@ -711,7 +711,7 @@
      */
     var _showProgress = function(msg) {
       var stripData = strip.data;
-      console.group("ANIMATION PROGRESS -", msg);
+      console.group("ANIMATION PROGRESS -", msg || "");
       console.log("stripData.id: \t\t", stripData.id , "\nseekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime, "\nanimations.id: ", animations[stripData.id].id);
       console.groupEnd();
     }
@@ -784,21 +784,27 @@
     /**
      * @name _setupScroll
      * @param 
-     * @description Setup scrolling
+     * @description Setup scrolling w/scrollbooster.js
      */
     var _setupScroll = function() {
-      const viewport = document.querySelector('.efm__media');
-      const content = document.querySelector('.efm__media-collection');
+      const viewport = document.querySelector(defaults.media);
+      const content = document.querySelector(defaults.mediaCollection);
 
-      var scrollInstance = new ScrollBooster({
+      scrollInstance = new ScrollBooster({
           viewport,
           content,
           //direction: 'horizontal',
           onUpdate: (state) => {
             _pauseMarquee();
+            if (!animations[strip.data.id]) return;
+            var scrollPercent = animations[strip.data.id].progress = ( (Math.abs(-state.position.x / displacement)) * 100 ) || animations[strip.data.id].progress;
+            seekBar.value = scrollPercent;
+            animations[strip.data.id].currentTime = (scrollPercent / 100) * animations[strip.data.id].duration;
             content.style.transform = `translate(
               ${-state.position.x}px
             )`;
+            _setTimer();
+            _showProgress();
           },
           // other options (see below)
       });
