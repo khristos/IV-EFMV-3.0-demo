@@ -32179,7 +32179,7 @@ input.visually-hidden:focus + label {
   padding: 0 14px;
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
-  background-color: #991b1e;
+  background-color: #7a7a7a;
 }
 
 .efm__menuBar-dots span {

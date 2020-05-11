@@ -95,19 +95,6 @@
   var handleChange = function( e ) {
   };
 
-  /**
-   * @name handleRender
-   * @var
-   * @function
-   * @description Handles functions to execute after the views have rendered
-   * @param {EventListenerObject} e 
-   */
-  var handleRender = function( e ) {
-    if (e.target.matches('.efm__player')) {
-      alert("Render event.");
-    }
-  };
-
 
   /**
    * Create the Constructor object
@@ -374,7 +361,6 @@
 
       // Setup event listeners
       _addEvents();
-      _setupScroll();
     };
 
 
@@ -452,9 +438,9 @@
       playButton = settings.playButton,
       seekBar = document.querySelector(settings.seekBar);
 
-      var stripData = strip.getData(), playerData = player.getData(),
-      stripStartTime = stripData.times.mediaStartTime,
-      stripEndTime = stripData.times.mediaEndTime;
+      var playerData = player.getData(),
+      stripStartTime = strip.data.times.mediaStartTime,
+      stripEndTime = strip.data.times.mediaEndTime;
 
       strip.data.duration = ( stripEndTime - stripStartTime ) / playerData.speed;
 
@@ -475,7 +461,7 @@
         update: function(animation) {
           seekBar.value = animations[strip.data.id].progress;
           seekBar.setAttribute('aria-valuenow', seekBar.value);
-          timer.setData({timerCurrent: EFM.Util.secondsToHms( (animation.currentTime / 1000 ) + ( stripStartTime / 1000) ) || 0});
+          timer.setData({timerCurrent: EFM.Util.secondsToHms( (animation.currentTime / 1000) + (stripStartTime / 1000) ) || 0});
         },
         autoplay: false
       });
@@ -491,11 +477,9 @@
         offset: 0
       })
 
-      _updateSeekbar();
+      menuBar.setData({ attrs: {className: ' ', ariaExpanded: 'false'} });
 
-      console.group("ANIMATIONS");
-      console.log("Instances: ", animations, ";\nAnimation ID: ", animations[strip.data.id].id, ";\nStrip ID: ", strip.data.id, ";\nInstance duration: ", animations[strip.data.id].duration);
-      console.groupEnd();
+      _setTimer();
     };
 
 
@@ -519,7 +503,8 @@
       }
       //debugger;
       _showProgress("_playMarquee - isPaused: " + animations[stripData.id].paused);
-      timer.render();
+
+      _setTimer();
     };
 
     /**
@@ -528,12 +513,12 @@
      * @description Pause marquee
      */
     var _pauseMarquee = function() {
-      var stripData = strip.data;
-      if ( !animations[stripData.id] || animations[stripData.id].paused === true ) return; // Exit if animation is paused.
-      animations[stripData.id].pause();
-      _showProgress("_pauseMarquee: " + animations[stripData.id].paused);
+      if ( !animations[strip.data.id] || animations[strip.data.id].paused === true ) return; // Exit if animation is paused.
+      animations[strip.data.id].pause();
+      //_showProgress("_pauseMarquee: " + animations[strip.data.id].paused);
       controlBar.setData({hasState: settings.playButtonState.isPaused});
-      timer.render();
+      //timer.render();
+      //_setTimer();
     };
 
 
@@ -562,14 +547,15 @@
       //media.addEventListener('scroll', EFM.Util.debounce(handleScroll), { capture: true, passive: true });
 
       // Skip forward/backward in time.
-      document.addEventListener('click', _skipForward, false );
-      document.addEventListener('click', _skipBackward, false );
-      document.addEventListener('click', _toggleMenuBar, false );
-      document.addEventListener('click', _selectStrip, false );
+      document.addEventListener('click', _skipForward, false);
+      document.addEventListener('click', _skipBackward, false);
+      document.addEventListener('click', _toggleMenuBar, false);
+      document.addEventListener('click', _selectStrip, false);
 
+      _setupScroll();
       //document.addEventListener( 'click', handleClick, false );
       //document.addEventListener( 'change', handleChange, false );
-      //document.addEventListener( 'render', handleRender, false );
+      //document.addEventListener('render', handleRender, false);
     };
 
 
@@ -642,18 +628,18 @@
    */
     var _skipForward = function(event) {
       event.preventDefault();
-      var stripData = strip.getData();
       var targetButton = event.target.closest(settings.forwardTimeButton);
       if ( !targetButton ) return;
-      if ( animations[stripData.id].currentTime === 0 ) {
-        animations[stripData.id].play();
+      if ( animations[strip.data.id].currentTime === 0 ) {
+        animations[strip.data.id].play();
       }
-      var offset = Number.parseInt( targetButton.dataset.offset );
-      animations[stripData.id].pause();
-      controlBar.setData({hasState: settings.playButtonState.isPaused});
+      _pauseMarquee();
+      var offset = parseInt( targetButton.dataset.offset );
       //console.log("Skip Forward");
-      animations[stripData.id].seek( (animations[stripData.id].currentTime) + ( 1000*60*offset ) ); // skip offset minutes
-      _updateSeekbar();
+      animations[strip.data.id].seek( (animations[strip.data.id].currentTime) + ( 1000*60*offset ) ); // skip offset minutes
+
+      _showAnimations();
+      _showProgress();
     }
 
 
@@ -671,12 +657,15 @@
       if ( animations[stripData.id].currentTime === 0 ) {
         animations[stripData.id].play();
       }
+      _pauseMarquee();
       var offset = Number.parseInt( targetButton.dataset.offset );
       animations[stripData.id].pause();
       controlBar.setData({hasState: settings.playButtonState.isPaused});
       //console.log("Skip Backward");
       animations[stripData.id].seek( (animations[stripData.id].currentTime) - ( 1000*60*offset ) ); // skip offset minutes
-      _updateSeekbar();
+
+      _showAnimations();
+      _showProgress();
     }
 
 
@@ -687,20 +676,36 @@
    * @description Update the seek bar (i.e. input range control).
    */
   var _updateSeekbar = function() {
-    var stripData = strip.data;
-    if (!animations[stripData.id]) return; 
-    seekBar.value = animations[stripData.id].progress;
-    animations[stripData.id].seek(animations[stripData.id].currentTime);
+    if (!animations[strip.data.id]) return;
+    seekBar.value = animations[strip.data.id].progress;
+    seekBar.setAttribute('aria-valuenow', seekBar.value);
+    animations[strip.data.id].seek(animations[strip.data.id].currentTime);
     //animations[strip.data.id].seek(animations[strip.data.id].duration * (seekBar.value / 100));
     _setTimer();
-    menuBar.render();
-    console.log("Animation Instance: ", animations);
+    _showAnimations();
+    _showProgress();
     // Work out how much of the media has played via the duration and currentTime parameters
     //var percentage = Math.floor((100 / player.duration) * player.currentTime);
     // Update the progress bar's value
     //progressBar.value = percentage;
     // Update the progress bar's text (for browsers that don't support the progress element)
     //progressBar.innerHTML = percentage + '% played';
+  }
+
+
+  /**
+   * @name _updateProgress
+   * @var
+   * @function
+   * @description Update animation progress and current time.
+   */
+  var _updateProgress = function() {
+    if (!animations[strip.data.id]) return;
+    animations[strip.data.id].currentTime = ((seekBar.value / 100) * animations[strip.data.id].duration);
+    animations[strip.data.id].progress = seekBar.value;
+    _setTimer();
+    _showAnimations();
+    _showProgress();
   }
 
 
@@ -711,8 +716,20 @@
      */
     var _showProgress = function(msg) {
       var stripData = strip.data;
-      console.group("ANIMATION PROGRESS -", msg || "");
-      console.log("stripData.id: \t\t", stripData.id , "\nseekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTime: ", animations[stripData.id].currentTime, "\nanimations.id: ", animations[stripData.id].id);
+      console.group("ANIMATION PROGRESS", msg || "");
+      console.log("stripData.id: \t\t", stripData.id , "\nseekBar.value: \t\t", seekBar.value , '%', "\nanimations.progress: ", animations[stripData.id].progress, "\nanimations.duration: ", animations[stripData.id].duration, "\nanimations.currentTimeMS: ", animations[stripData.id].currentTime, "\nanimations.currentTimeHMS: ", EFM.Util.secondsToHms( (animations[stripData.id].currentTime / 1000 ) + ( strip.data.times.mediaStartTime / 1000) ), "\nanimations.id: ", animations[stripData.id].id);
+      console.groupEnd();
+    }
+
+
+    /**
+     * @name _showAnimations
+     * @param 
+     * @description Console.log animation instances.
+     */
+    var _showAnimations = function() {
+      console.group("ANIMATIONS");
+      console.log("Instances: ", animations, ";\nAnimation ID: ", animations[strip.data.id].id, ";\nStrip ID: ", strip.data.id, ";\nInstance duration: ", animations[strip.data.id].duration);
       console.groupEnd();
     }
 
@@ -749,7 +766,7 @@
       var stripID = event.target.getAttribute('data-strip-id'),
       menuBarMachine = menuBar.data.machine,
       state = EFM.Util.transition(menuBar, menuBarMachine.currentState, 'TOGGLE');
-      console.group("STATE (MenuBar): ", state, "\n", menuBarMachine.states[state]);
+      console.groupCollapsed("STATE (MenuBar): ", state, "\n", menuBarMachine.states[state]);
       console.groupEnd();
       var dropdown = menuBarMachine.states[state].attrs['className'],
       ariaExpanded = menuBarMachine.states[state].attrs['ariaExpanded'];
@@ -758,9 +775,12 @@
       strip.setData({id: stripID});
       menuBarMachine['currentState'] = state;
       menuBar.setData({ attrs: {className: dropdown, ariaExpanded: ariaExpanded}, title: strip.data.title });
+      //scrollInstance.destroy();
       _initMarquee();
       _updateSeekbar();
+      //scrollInstance.updateMetrics();
     }
+
 
 
     /**
@@ -770,11 +790,11 @@
      */
     var _setTimer = function() {
       var stripData = strip.data;
-      if (!animations[stripData.id]) return;
+      if (!animations[strip.data.id]) return;
 
-      var stripStartTime = stripData.times.mediaStartTime,
-      stripEndTime = stripData.times.mediaEndTime;
-      timerCurrent = EFM.Util.secondsToHms( (animations[stripData.id].currentTime / 1000 ) + ( stripStartTime / 1000) ) || EFM.Util.secondsToHms( stripStartTime / 1000 );
+      var stripStartTime = strip.data.times.mediaStartTime,
+      stripEndTime = strip.data.times.mediaEndTime;
+      timerCurrent = EFM.Util.secondsToHms( (animations[strip.data.id].currentTime / 1000 ) + ( stripStartTime / 1000) ) || EFM.Util.secondsToHms( stripStartTime / 1000 );
       timerTotal = EFM.Util.secondsToHms( stripEndTime / 1000 ) || 0;
 
       timer.setData({timerCurrent: timerCurrent, timerTotal: timerTotal});
@@ -787,28 +807,72 @@
      * @description Setup scrolling w/scrollbooster.js
      */
     var _setupScroll = function() {
-      const viewport = document.querySelector(defaults.media);
-      const content = document.querySelector(defaults.mediaCollection);
+      var viewport = document.querySelector(defaults.media);
+      var content = document.querySelector(defaults.mediaCollection);
+      var scrollPercent = 0;
 
       scrollInstance = new ScrollBooster({
           viewport,
           content,
+          bounce: false,
+          friction: 0.75,
           //direction: 'horizontal',
           onUpdate: (state) => {
             _pauseMarquee();
             if (!animations[strip.data.id]) return;
-            var scrollPercent = animations[strip.data.id].progress = ( (Math.abs(-state.position.x / displacement)) * 100 ) || animations[strip.data.id].progress;
+
+            scrollPercent = animations[strip.data.id].progress = ( (Math.abs(-state.position.x / displacement)) * 100 ) || animations[strip.data.id].progress;
             seekBar.value = scrollPercent;
+            animations[strip.data.id].progress = scrollPercent;
             animations[strip.data.id].currentTime = (scrollPercent / 100) * animations[strip.data.id].duration;
-            content.style.transform = `translate(
+
+            content.style.transform = `translateX(
               ${-state.position.x}px
             )`;
-            _setTimer();
-            _showProgress();
+
+            _updateProgress();
+            //_setTimer();
+            //_showAnimations();
+            //_showProgress();
           },
           // other options (see below)
       });
     }
+
+
+    /**
+     * @name _getXpos
+     * @param 
+     * @description Return x coordinate position using seekbar value.
+     */
+    var _getXpos = function() {
+      return -(seekBar.value * displacement) / 100;
+    }
+
+    /**
+     * @name _setXpos
+     * @param 
+     * @description Return x coordinate position using seekbar value.
+     */
+    var _setXpos = function() {
+      anime.set(settings.mediaCollection, {
+        translateX: function() { return _getXpos(); }
+      });
+    }
+
+  /**
+   * @name handleRender
+   * @var
+   * @function
+   * @description Handles functions to execute after the views have rendered
+   * @param {EventListenerObject} e 
+   */
+  var handleRender = function( e ) {
+    //console.log(e);
+    if (e.target.matches('.efm__player')) {
+      //alert("Render event.");
+    }
+  };
 
     /**
      * Initialize viewer plugin

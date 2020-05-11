@@ -1,7 +1,7 @@
 /*! efm-viewer v3.0.0 | (c) 2020 Illustrated Verdict | Illustrated Verdict License | https://github.com/khristos/IV-EFMV */
 /*
- * anime.js v3.1.0
- * (c) 2019 Julian Garnier
+ * anime.js v3.2.0
+ * (c) 2020 Julian Garnier
  * Released under the MIT license
  * animejs.com
  */
@@ -33,7 +33,7 @@ var defaultTweenSettings = {
   round: 0
 };
 
-var validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'perspective'];
+var validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'perspective', 'matrix', 'matrix3d'];
 
 // Caching
 
@@ -135,7 +135,7 @@ function spring(string, duration) {
 function steps(steps) {
   if ( steps === void 0 ) steps = 10;
 
-  return function (t) { return Math.round(t * steps) * (1 / steps); };
+  return function (t) { return Math.ceil((minMax(t, 0.000001, 1)) * steps) * (1 / steps); };
 }
 
 // BezierEasing https://github.com/gre/bezier-easing
@@ -1136,6 +1136,7 @@ function anime(params) {
 
   instance.reverse = function() {
     toggleInstanceDirection();
+    instance.completed = instance.reversed ? false : true;
     resetTime();
   };
 
@@ -1265,7 +1266,7 @@ function timeline(params) {
   return tl;
 }
 
-anime.version = '3.1.0';
+anime.version = '3.2.0';
 anime.speed = 1;
 anime.running = activeInstances;
 anime.remove = removeTargets;
@@ -2340,9 +2341,9 @@ var placeholders = function (template, data) {
 
 };
 /*!
- * reefjs v4.1.12
+ * reefjs v4.1.13
  * A lightweight helper function for creating reactive, state-based components and UI
- * (c) 2019 Chris Ferdinandi
+ * (c) 2020 Chris Ferdinandi
  * MIT License
  * http://github.com/cferdinandi/reef
  */
@@ -2603,7 +2604,10 @@ if (!Element.prototype.matches) {
 						elem[attribute.att] = attribute.value || attribute.att;
 					} catch (e) {}
 				}
-				elem.setAttribute(attribute.att, attribute.value || '');
+				try {
+					elem.setAttribute(attribute.att, attribute.value || '');
+				} catch (e) {}
+
 			}
 		}));
 	};
@@ -2628,7 +2632,9 @@ if (!Element.prototype.matches) {
 						elem[attribute.att] = '';
 					} catch (e) {}
 				}
-				elem.removeAttribute(attribute.att);
+				try {
+					elem.removeAttribute(attribute.att);
+				} catch (e) {}
 			}
 		}));
 	};
@@ -3037,7 +3043,7 @@ if (!Element.prototype.matches) {
 
 ! (function(t, e) {
     "object" == typeof exports && "object" == typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define("ScrollBooster", [], e) : "object" == typeof exports ? exports.ScrollBooster = e() : t.ScrollBooster = e()
-})(window, (function() {
+})(this, (function() {
     return (function(t) {
         var e = {};
 
@@ -3129,12 +3135,12 @@ if (!Element.prototype.matches) {
             }
         }
         i.r(e), i.d(e, "default", (function() {
-            return c
+            return h
         }));
-        var h = function(t) {
+        var a = function(t) {
                 return Math.max(t.offsetHeight, t.scrollHeight)
             },
-            c = (function() {
+            h = (function() {
                 function t() {
                     var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {};
                     r(this, t);
@@ -3149,6 +3155,7 @@ if (!Element.prototype.matches) {
                         textSelection: !1,
                         inputsFocus: !0,
                         emulateScroll: !1,
+                        pointerDownPreventDefault: !0,
                         onClick: function() {},
                         onUpdate: function() {},
                         shouldScroll: function() {
@@ -3182,7 +3189,7 @@ if (!Element.prototype.matches) {
                             height: this.props.viewport.clientHeight
                         }, this.content = {
                             width: (t = this.props.content, Math.max(t.offsetWidth, t.scrollWidth)),
-                            height: h(this.props.content)
+                            height: a(this.props.content)
                         }, this.edgeX = {
                             from: Math.min(-this.content.width + this.viewport.width, 0),
                             to: 0
@@ -3236,17 +3243,17 @@ if (!Element.prototype.matches) {
                             if (n || s) {
                                 var r = t ? this.edgeX.from : this.edgeX.to,
                                     p = i ? this.edgeY.from : this.edgeY.to,
-                                    h = r - this.position.x,
-                                    c = p - this.position.y,
-                                    a = {
-                                        x: h * this.props.bounceForce,
-                                        y: c * this.props.bounceForce
+                                    a = r - this.position.x,
+                                    h = p - this.position.y,
+                                    c = {
+                                        x: a * this.props.bounceForce,
+                                        y: h * this.props.bounceForce
                                     },
-                                    l = this.position.x + (this.velocity.x + a.x) / this.props.friction,
-                                    u = this.position.y + (this.velocity.y + a.y) / this.props.friction;
-                                (t && l >= this.edgeX.from || e && l <= this.edgeX.to) && (a.x = h * this.props.bounceForce - this.velocity.x), (i && u >= this.edgeY.from || o && u <= this.edgeY.to) && (a.y = c * this.props.bounceForce - this.velocity.y), this.applyForce({
-                                    x: n ? a.x : 0,
-                                    y: s ? a.y : 0
+                                    l = this.position.x + (this.velocity.x + c.x) / this.props.friction,
+                                    u = this.position.y + (this.velocity.y + c.y) / this.props.friction;
+                                (t && l >= this.edgeX.from || e && l <= this.edgeX.to) && (c.x = a * this.props.bounceForce - this.velocity.x), (i && u >= this.edgeY.from || o && u <= this.edgeY.to) && (c.y = h * this.props.bounceForce - this.velocity.y), this.applyForce({
+                                    x: n ? c.x : 0,
+                                    y: s ? c.y : 0
                                 })
                             }
                         }
@@ -3341,11 +3348,11 @@ if (!Element.prototype.matches) {
                             var s = (o = !(!i.touches || !i.touches[0])) ? i.touches[0] : i,
                                 r = s.pageX,
                                 p = s.pageY,
-                                h = s.clientX,
-                                c = s.clientY,
-                                a = t.props.viewport,
-                                l = a.getBoundingClientRect();
-                            if (!(h - l.left >= a.clientLeft + a.clientWidth) && !(c - l.top >= a.clientTop + a.clientHeight) && t.props.shouldScroll(t.getState(), i) && 2 !== i.button && ("mouse" !== t.props.pointerMode || !o) && ("touch" !== t.props.pointerMode || o) && !(t.props.inputsFocus && ["input", "textarea", "button", "select", "label"].indexOf(i.target.nodeName.toLowerCase()) > -1)) {
+                                a = s.clientX,
+                                h = s.clientY,
+                                c = t.props.viewport,
+                                l = c.getBoundingClientRect();
+                            if (!(a - l.left >= c.clientLeft + c.clientWidth) && !(h - l.top >= c.clientTop + c.clientHeight) && t.props.shouldScroll(t.getState(), i) && 2 !== i.button && ("mouse" !== t.props.pointerMode || !o) && ("touch" !== t.props.pointerMode || o) && !(t.props.inputsFocus && ["input", "textarea", "button", "select", "label"].indexOf(i.target.nodeName.toLowerCase()) > -1)) {
                                 if (t.props.textSelection) {
                                     if (function(t, e, i) {
                                             for (var o = t.childNodes, n = document.createRange(), s = 0; s < o.length; s++) {
@@ -3357,11 +3364,11 @@ if (!Element.prototype.matches) {
                                                 }
                                             }
                                             return !1
-                                        }(i.target, h, c)) return;
+                                        }(i.target, a, h)) return;
                                     (u = window.getSelection ? window.getSelection() : document.selection) && (u.removeAllRanges ? u.removeAllRanges() : u.empty && u.empty())
                                 }
                                 var u;
-                                t.isDragging = !0, e.x = r, e.y = p, t.dragStartPosition.x = t.position.x, t.dragStartPosition.y = t.position.y, n(i), t.startAnimationLoop(), i.preventDefault()
+                                t.isDragging = !0, e.x = r, e.y = p, t.dragStartPosition.x = t.position.x, t.dragStartPosition.y = t.position.y, n(i), t.startAnimationLoop(), t.props.pointerDownPreventDefault && i.preventDefault()
                             }
                         }, this.events.pointermove = function(t) {
                             n(t)
@@ -3377,7 +3384,10 @@ if (!Element.prototype.matches) {
                                 o = e.scrollTop;
                             Math.abs(t.position.x + i) > 3 && (t.position.x = -i, t.velocity.x = 0), Math.abs(t.position.y + o) > 3 && (t.position.y = -o, t.velocity.y = 0)
                         }, this.events.click = function(e) {
-                            return t.props.onClick(t.getState(), e)
+                            var i = t.getState(),
+                                o = "vertical" !== t.props.direction ? i.dragOffset.x : 0,
+                                n = "horizontal" !== t.props.direction ? i.dragOffset.y : 0;
+                            Math.max(Math.abs(o), Math.abs(n)) > 5 && (e.preventDefault(), e.stopPropagation()), t.props.onClick(i, e)
                         }, this.events.contentLoad = function() {
                             return t.updateMetrics()
                         }, this.events.resize = function() {
@@ -3393,3 +3403,4 @@ if (!Element.prototype.matches) {
             })()
     })]).default
 }));
+

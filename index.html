@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Illustrated Verdict | Electronic Fetal Monitoring Viewer</title>
-  <link rel="stylesheet" type="text/css" href="./assets/css/main.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/main.min.css">
   <link rel="shortcut icon" type="image/x-icon" href="./assets/img/icons/favicon.ico">
 </head>
 <body class="efm__viewer">
@@ -25,7 +25,7 @@
         <!-- Template - BEGIN -->
         <script id="template--efm__timeline" data-efm-timeline type="text/template">
           <fieldset class="column is-full">
-            <input type="range" class="efm__seek-bar" list="tick-values" min="0" max="100" value="0" step=".00000000000001" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <input type="range" class="efm__seek-bar" list="tick-values" min="0" max="100" value="0" step=".00000000000000001" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <!--<output for="efm__seek-bar" class="efm__seek-time">0</output><br>-->
             <datalist id="tick-values">
               <option value="10" label="Low"></option>
@@ -151,8 +151,8 @@
   <script type="text/javascript" src="./assets/js/efm.vendor.min.js"></script>
 
   <!-- Scripts -->
-  <script type="text/javascript" src="./assets/js/efm.main.polyfills.js"></script>
-  <script type="text/javascript" src="./assets/js/efm.components.js"></script>
+  <script type="text/javascript" src="./assets/js/efm.main.polyfills.min.js"></script>
+  <script type="text/javascript" src="./assets/js/efm.components.min.js"></script>
 
   <!-- Data -->
   <!--<iframe id='efm__configData' src="./content/data/config.json" onload="EFM.Util.getJSONIframe.call(this, EFM.Util.logTable)" style="display: none;"></iframe>-->
